@@ -18,7 +18,7 @@ RUN if [ -f pnpm-lock.yaml ]; then pnpm build; else npm run build; fi
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# SPA 라우팅용 nginx 설정 덮어쓰기
+# SPA 라우팅용 nginx 설정 덮어쓰기 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
