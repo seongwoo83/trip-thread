@@ -1,0 +1,48 @@
+name: Deploy to ECR
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ECR_REGISTRY: 522966066536.dkr.ecr.ap-northeast-2.amazonaws.com
+  ECR_REPOSITORY: trip-thread-web
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::522966066536:role/github-trip-thread-ecr-role
+          aws-region: ap-northeast-2
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set short SHA
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Build Docker image
+        run: |
+          docker build -t trip-thread .
+
+      - name: Tag Docker image
+        run: |
+          docker tag trip-thread:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker tag trip-thread:latest $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.run_number }}-${{ env.SHORT_SHA }}
+
+      - name: Push Docker image
+        run: |
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.run_number }}-${{ env.SHORT_SHA }}
