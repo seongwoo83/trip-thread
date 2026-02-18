@@ -11,7 +11,7 @@ permissions:
 
 env:
   ECR_REGISTRY: 522966066536.dkr.ecr.ap-northeast-2.amazonaws.com
-  ECR_REPOSITORY: trip-thread-web
+  ECR_REPOSITORY: wooniverse/trip-thread-web
 
 jobs:
   build-and-push:
