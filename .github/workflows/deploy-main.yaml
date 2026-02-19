@@ -46,3 +46,16 @@ jobs:
         run: |
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.run_number }}-${{ env.SHORT_SHA }}
+
+      - name: Deploy on EC2 (pull & restart)
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /opt/trip-thread
+            docker compose pull
+            docker compose up -d
+            docker image prune -f
+            docker ps
