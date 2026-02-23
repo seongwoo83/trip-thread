@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Group, TextInput } from "@mantine/core";
-import { useJoinTrip } from "../model/useJoinTrip";
+import { useJoinTrip } from "@/features/join-trip/model/useJoinTrip";
 
 export const JoinTripForm = () => {
 	const navigate = useNavigate();

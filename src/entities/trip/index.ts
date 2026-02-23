@@ -1,3 +1,3 @@
-export type { Trip } from "./model/types";
-export { useMyTrips } from "./model/useMyTrips";
-export { getLocalTripIds, addLocalTripId } from "./model/localStorage";
+export type { Trip } from "@/entities/trip/model/types";
+export { useMyTrips } from "@/entities/trip/model/useMyTrips";
+export { getLocalTripIds, addLocalTripId } from "@/entities/trip/model/localStorage";
