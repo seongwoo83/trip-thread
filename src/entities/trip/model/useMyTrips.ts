@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/shared/api";
-import { getLocalTripIds } from "./localStorage";
-import type { Trip } from "./types";
+import { getLocalTripIds } from "@/entities/trip/model/localStorage";
+import type { Trip } from "@/entities/trip/model/types";
 
 export function useMyTrips() {
 	return useQuery<Trip[]>({

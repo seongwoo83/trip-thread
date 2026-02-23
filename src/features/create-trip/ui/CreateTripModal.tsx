@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import "@mantine/dates/styles.css";
-import { useCreateTrip } from "../model/useCreateTrip";
+import { useCreateTrip } from "@/features/create-trip/model/useCreateTrip";
 import type { Trip } from "@/entities/trip";
 
 type Props = {
