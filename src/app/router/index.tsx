@@ -7,7 +7,7 @@ import { Header } from "@/widgets/header";
 
 const Layout = () => (
 	<AppShell header={{ height: 56 }}>
-		<AppShell.Header>
+		<AppShell.Header style={{ background: "transparent", borderBottom: "none", boxShadow: "none" }}>
 			<Header />
 		</AppShell.Header>
 		<AppShell.Main>
@@ -23,7 +23,7 @@ export const AppRouter = () => {
 		<Routes>
 			<Route element={<Layout />}>
 				<Route path="/" element={<HomePage />} />
-				<Route path="/trip" element={<TripPage />} />
+				<Route path="/trip/:id" element={<TripPage />} />
 				<Route path="*" element={<NotFoundPage />} />
 			</Route>
 		</Routes>
