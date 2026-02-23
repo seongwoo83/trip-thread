@@ -9,6 +9,8 @@ import {
 	Text,
 	TextInput,
 } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
+import "@mantine/dates/styles.css";
 import { useCreateTrip } from "../model/useCreateTrip";
 import type { Trip } from "@/entities/trip";
 
@@ -58,7 +60,6 @@ export const CreateTripModal = ({ opened, onClose }: Props) => {
 					<div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
 						<span
 							className="flex-1 text-center text-2xl tracking-[0.25em] font-bold"
-							style={{ fontFamily: "monospace" }}
 						>
 							{createdTrip.invite_code}
 						</span>
@@ -115,26 +116,22 @@ export const CreateTripModal = ({ opened, onClose }: Props) => {
 							setForm((f) => ({ ...f, destination: e.target.value }))
 						}
 					/>
-					<Group grow>
-						<TextInput
-							label="출발일"
-							type="date"
-							required
-							value={form.start_date}
-							onChange={(e) =>
-								setForm((f) => ({ ...f, start_date: e.target.value }))
-							}
-						/>
-						<TextInput
-							label="귀국일"
-							type="date"
-							required
-							value={form.end_date}
-							onChange={(e) =>
-								setForm((f) => ({ ...f, end_date: e.target.value }))
-							}
-						/>
-					</Group>
+					<DatePickerInput
+						type="range"
+						label="여행 기간"
+						placeholder="날짜를 선택하세요"
+						required
+						allowSingleDateInRange
+						value={[form.start_date || null, form.end_date || null]}
+						onChange={(value) => {
+							setForm((f) => ({
+								...f,
+								start_date: value[0] ?? "",
+								end_date: value[1] ?? "",
+							}));
+						}}
+						locale="ko"
+					/>
 					<Button type="submit" loading={isPending} mt="xs">
 						여행 만들기
 					</Button>
