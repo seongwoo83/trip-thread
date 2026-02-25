@@ -40,8 +40,8 @@ export function useCreateTrip() {
 						.single();
 
 					if (!error && data) return data as Trip;
-					// 10001 = unique_violation (invite_code 중복)
-					if (!error || error.code !== "10001") {
+					// 23505 = unique_violation (invite_code 중복)
+					if (!error || error.code !== "23505") {
 						throw new Error(error?.message ?? "여행 생성에 실패했어요");
 					}
 				}
