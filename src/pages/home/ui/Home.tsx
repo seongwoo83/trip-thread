@@ -3,6 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Button, Skeleton, Stack, Text } from "@mantine/core";
 import { CreateTripModal } from "@/features/create-trip";
 import { JoinTripForm } from "@/features/join-trip";
+import { RecoverMembershipModal } from "@/features/recover-membership";
 import { useMyTrips } from "@/entities/trip";
 import type { Trip } from "@/entities/trip";
 
@@ -37,11 +38,13 @@ const TripCard = ({ trip }: { trip: Trip }) => {
 
 export const HomePage = () => {
 	const [modalOpened, { open, close }] = useDisclosure(false);
+	const [recoverOpened, { open: openRecover, close: closeRecover }] = useDisclosure(false);
 	const { data: trips, isLoading } = useMyTrips();
 
 	return (
 		<>
 			<CreateTripModal opened={modalOpened} onClose={close} />
+			<RecoverMembershipModal opened={recoverOpened} onClose={closeRecover} />
 
 			<Stack gap={40} pt="xl">
 				{/* Hero */}
@@ -68,6 +71,15 @@ export const HomePage = () => {
 						초대 코드로 여행에 참여하기
 					</Text>
 					<JoinTripForm />
+					<Text size="xs" c="gray.4" ta="center" mt="sm">
+						기기를 바꿨나요?{" "}
+						<button
+							onClick={openRecover}
+							className="text-indigo-400 hover:underline cursor-pointer"
+						>
+							복구 코드로 접근권 복구하기
+						</button>
+					</Text>
 				</div>
 
 				{/* My trips */}
