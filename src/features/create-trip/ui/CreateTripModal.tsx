@@ -77,7 +77,11 @@ export const CreateTripModal = ({ opened, onClose }: Props) => {
 						</div>
 					</div>
 
-					<Alert color="yellow" title="복구 코드를 저장해두세요" variant="light">
+					<Alert
+						color="yellow"
+						title="복구 코드를 저장해두세요"
+						variant="light"
+					>
 						<Text size="sm" mb="sm">
 							기기를 바꾸거나 기록이 삭제되면 이 코드로 여행을 다시 찾을 수
 							있어요. 지금만 보여드려요.
