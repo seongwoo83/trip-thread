@@ -1,6 +1,14 @@
 import { SyntheticEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Alert, Button, CopyButton, Group, Stack, Text, TextInput } from "@mantine/core";
+import {
+	Alert,
+	Button,
+	CopyButton,
+	Group,
+	Stack,
+	Text,
+	TextInput,
+} from "@mantine/core";
 import { useJoinTrip } from "@/features/join-trip/model/useJoinTrip";
 import { formatRecoveryCode } from "@/shared/lib";
 import type { JoinTripResult } from "@/features/join-trip/model/useJoinTrip";
@@ -14,7 +22,10 @@ export const JoinTripForm = () => {
 
 	const handleSubmit = async (e: SyntheticEvent) => {
 		e.preventDefault();
-		const res = await mutateAsync({ code: code.trim(), nickname: nickname.trim() });
+		const res = await mutateAsync({
+			code: code.trim(),
+			nickname: nickname.trim(),
+		});
 		setResult(res);
 	};
 
@@ -23,7 +34,8 @@ export const JoinTripForm = () => {
 			<Stack gap="sm">
 				<Alert color="yellow" title="복구 코드를 저장해두세요">
 					<Text size="sm" mb="xs">
-						기기를 바꾸거나 데이터가 초기화되면 이 코드로 여행 접근권을 복구할 수 있어요.
+						기기를 바꾸거나 데이터가 초기화되면 이 코드로 여행 접근권을 복구할
+						수 있어요.
 					</Text>
 					<Group gap="xs" align="center">
 						<Text fw={700} ff="monospace" size="lg">
@@ -78,7 +90,11 @@ export const JoinTripForm = () => {
 							error={error?.message}
 							className="flex-1"
 						/>
-						<Button type="submit" loading={isPending} disabled={!nickname.trim()}>
+						<Button
+							type="submit"
+							loading={isPending}
+							disabled={!nickname.trim()}
+						>
 							참여하기
 						</Button>
 					</Group>

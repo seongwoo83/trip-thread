@@ -15,7 +15,13 @@ export const Header = () => {
 					{/* Logo */}
 					<RNavLink to="/" className="no-underline">
 						<span
-							style={{ fontFamily: "Paperozi", fontWeight: 700, fontSize: "1.125rem", letterSpacing: "-0.02em", color: "#111" }}
+							style={{
+								fontFamily: "Paperozi",
+								fontWeight: 700,
+								fontSize: "1.125rem",
+								letterSpacing: "-0.02em",
+								color: "#111",
+							}}
 						>
 							Trip
 							<span style={{ color: "#6366f1" }}>·</span>
@@ -83,7 +89,14 @@ export const Header = () => {
 				opened={opened}
 				onClose={close}
 				title={
-					<span style={{ fontFamily: "Paperozi", fontWeight: 700, fontSize: "1.125rem", letterSpacing: "-0.02em" }}>
+					<span
+						style={{
+							fontFamily: "Paperozi",
+							fontWeight: 700,
+							fontSize: "1.125rem",
+							letterSpacing: "-0.02em",
+						}}
+					>
 						trip<span style={{ color: "#6366f1" }}>·</span>thread
 					</span>
 				}
