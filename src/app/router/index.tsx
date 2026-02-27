@@ -7,7 +7,13 @@ import { Header } from "@/widgets/header";
 
 const Layout = () => (
 	<AppShell header={{ height: 56 }}>
-		<AppShell.Header style={{ background: "transparent", borderBottom: "none", boxShadow: "none" }}>
+		<AppShell.Header
+			style={{
+				background: "transparent",
+				borderBottom: "none",
+				boxShadow: "none",
+			}}
+		>
 			<Header />
 		</AppShell.Header>
 		<AppShell.Main>

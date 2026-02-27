@@ -44,7 +44,8 @@ export function useRecoverMembership() {
 				.eq("recovery_code_hash", recoveryCodeHash)
 				.single();
 
-			if (memberError || !member) throw new Error("복구 코드가 일치하지 않아요");
+			if (memberError || !member)
+				throw new Error("복구 코드가 일치하지 않아요");
 
 			// 3. 새 토큰 + 복구 코드 발급 (rotation)
 			const newMemberToken = generateToken();

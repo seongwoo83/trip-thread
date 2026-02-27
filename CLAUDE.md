@@ -9,7 +9,7 @@ pnpm dev          # Start dev server
 pnpm build        # Type-check + production build (tsc -b && vite build)
 pnpm lint         # Run ESLint
 pnpm preview      # Preview production build
-pnpm write        # Run Prettier (format files)
+pnpm write        # Run oxfmt (format files)
 ```
 
 > Package manager is **pnpm**. Do not use npm or yarn.
@@ -30,6 +30,7 @@ src/
 ```
 
 **Layer rules:**
+
 - `app` → can import from all layers
 - `pages` → can import from `widgets`, `features`, `entities`, `shared`
 - `widgets` → can import from `features`, `entities`, `shared`
@@ -38,6 +39,7 @@ src/
 - Each slice exposes a **public API** via its `index.ts` — always import from the slice root, not from internal paths
 
 **Public API pattern (each slice):**
+
 ```
 widgets/header/
 ├── index.ts          ← public API (re-exports)
@@ -63,11 +65,11 @@ widgets/header/
 
 ## Current Routes
 
-| Path | Component |
-|------|-----------|
-| `/` | `HomePage` |
-| `/trip/:id` | `TripPage` |
-| `*` | `NotFoundPage` |
+| Path        | Component      |
+| ----------- | -------------- |
+| `/`         | `HomePage`     |
+| `/trip/:id` | `TripPage`     |
+| `*`         | `NotFoundPage` |
 
 ## Anonymous Auth System
 
@@ -99,39 +101,45 @@ trip_members
 ### 6-Feature Roadmap
 
 **(1) device_id — `shared/lib/deviceId.ts`** ✅
+
 - `getDeviceId()`: get-or-create UUID via `crypto.randomUUID()`, stored in `localStorage` as `trip-thread:device-id`
 - Sent with every mutation that creates/joins a trip
 
 **(2) Trip Create — `features/create-trip`**
+
 - `invite_code` generated server-side (Supabase DB function, not client-side `Math.random`)
 - Insert `trip_members` row with `role: 'host'`, `device_id`, `member_token_hash`, `recovery_code_hash`
 - Server returns plain `member_token` + `recovery_code` (one-time); only hashes stored in DB
 - Client stores `member_token` in localStorage as `trip-thread:token:{trip_id}`
 
 **(3) Trip Join — `features/join-trip`**
+
 - Find trip by `invite_code`
 - Prompt for nickname
 - Server inserts `trip_members` row with `role: 'member'`, issues `member_token` + `recovery_code`
 - Client stores token in localStorage
 
 **(4) Recovery Code Flow — `features/recover-membership`**
+
 - Shown once on create/join with a "복사" button
 - User enters recovery code → server finds member, rotates `member_token` (new hash saved), returns new token
 - Client stores new token in localStorage
 
 **(5) Recent Trips List — `entities/trip`**
+
 - Local-first: read trip IDs from localStorage → render immediately
 - Then fetch server-side: `trip_members` WHERE `device_id = ?` → join `trips` → sync/correct local list
 
 **(6) Permission Check (middleware pattern)**
+
 - On Trip page load and any write action: read `member_token` from localStorage for current `trip_id`
 - Send as `Authorization: Bearer <token>` header (or request body field)
 - Supabase RLS or Edge Function verifies: `SHA-256(token) == member_token_hash` AND `trip_members.trip_id == requested trip_id`
 
 ### localStorage Keys
 
-| Key | Value |
-|-----|-------|
-| `trip-thread:device-id` | UUID (device identifier) |
-| `trip-thread:trip-ids` | `string[]` (local trip list cache) |
-| `trip-thread:token:{trip_id}` | member_token (plain, per trip) |
+| Key                           | Value                              |
+| ----------------------------- | ---------------------------------- |
+| `trip-thread:device-id`       | UUID (device identifier)           |
+| `trip-thread:trip-ids`        | `string[]` (local trip list cache) |
+| `trip-thread:token:{trip_id}` | member_token (plain, per trip)     |
