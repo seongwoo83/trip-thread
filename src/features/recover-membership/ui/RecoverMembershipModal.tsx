@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Alert, Button, CopyButton, Group, Modal, Stack, Text, TextInput } from "@mantine/core";
+import {
+	Alert,
+	Button,
+	CopyButton,
+	Group,
+	Modal,
+	Stack,
+	Text,
+	TextInput,
+} from "@mantine/core";
 import { useRecoverMembership } from "@/features/recover-membership/model/useRecoverMembership";
 import { formatRecoveryCode } from "@/shared/lib";
 import type { RecoverResult } from "@/features/recover-membership/model/useRecoverMembership";
@@ -82,7 +91,10 @@ export const RecoverMembershipModal = ({ opened, onClose }: Props) => {
 							value={form.inviteCode}
 							onChange={(e) => {
 								reset();
-								setForm((f) => ({ ...f, inviteCode: e.target.value.toUpperCase() }));
+								setForm((f) => ({
+									...f,
+									inviteCode: e.target.value.toUpperCase(),
+								}));
 							}}
 							maxLength={6}
 							styles={{
@@ -98,7 +110,10 @@ export const RecoverMembershipModal = ({ opened, onClose }: Props) => {
 							placeholder="XXXX-XXXX-XXXX"
 							value={form.recoveryCode}
 							onChange={(e) =>
-								setForm((f) => ({ ...f, recoveryCode: e.target.value.toUpperCase() }))
+								setForm((f) => ({
+									...f,
+									recoveryCode: e.target.value.toUpperCase(),
+								}))
 							}
 							maxLength={14}
 							error={error?.message}

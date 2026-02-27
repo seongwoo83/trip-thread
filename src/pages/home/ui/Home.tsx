@@ -38,7 +38,8 @@ const TripCard = ({ trip }: { trip: Trip }) => {
 
 export const HomePage = () => {
 	const [modalOpened, { open, close }] = useDisclosure(false);
-	const [recoverOpened, { open: openRecover, close: closeRecover }] = useDisclosure(false);
+	const [recoverOpened, { open: openRecover, close: closeRecover }] =
+		useDisclosure(false);
 	const { data: trips, isLoading } = useMyTrips();
 
 	return (
@@ -103,12 +104,7 @@ export const HomePage = () => {
 					) : (
 						<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 py-14 text-center">
 							<p className="text-sm text-gray-400">아직 참여한 여행이 없어요</p>
-							<Button
-								variant="subtle"
-								size="xs"
-								mt="sm"
-								onClick={open}
-							>
+							<Button variant="subtle" size="xs" mt="sm" onClick={open}>
 								첫 여행을 만들어볼까요?
 							</Button>
 						</div>
