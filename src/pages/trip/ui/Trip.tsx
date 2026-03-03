@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Loader, Stack, Text } from "@mantine/core";
 import { useTripAccess } from "@/entities/trip";
+import { DestinationVoteWidget } from "@/widgets/destination-vote";
 
 export const TripPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -50,9 +51,10 @@ export const TripPage = () => {
 	// authorized
 	return (
 		<Stack gap="xl" pt="xl">
+			{/* 여행 헤더 */}
 			<div>
-				<Text size="xs" c="gray.5" mb={4}>
-					{trip!.destination}
+				<Text size="xs" c="gray.4" mb={4}>
+					{trip!.start_date} ~ {trip!.end_date}
 				</Text>
 				<h1
 					className="text-2xl font-bold text-gray-900 tracking-tight"
@@ -60,14 +62,29 @@ export const TripPage = () => {
 				>
 					{trip!.name}
 				</h1>
-				<Text size="sm" c="gray.5" mt={4}>
-					{trip!.start_date} ~ {trip!.end_date}
-				</Text>
+				{trip!.destination && (
+					<div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1">
+						<span className="text-xs font-medium text-indigo-600">
+							📍 {trip!.destination}
+						</span>
+					</div>
+				)}
 			</div>
 
-			<Text size="sm" c="gray.4">
-				{member!.nickname} ({member!.role === "host" ? "호스트" : "멤버"})
-			</Text>
+			{/* destination null → 투표 위젯 / 확정 → 게시판 (추후 개발) */}
+			{!trip!.destination ? (
+				<DestinationVoteWidget
+					tripId={trip!.id}
+					memberId={member!.id}
+					role={member!.role}
+				/>
+			) : (
+				<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 py-16 text-center">
+					<Text size="sm" c="gray.4">
+						게시판이 곧 열려요
+					</Text>
+				</div>
+			)}
 		</Stack>
 	);
 };
