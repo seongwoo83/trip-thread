@@ -51,8 +51,10 @@ export function useTripAccess(tripId: string | undefined): TripAccessResult {
 
 	if (isPending) return { status: "loading", trip: null, member: null };
 	if (!data) return { status: "not-found", trip: null, member: null };
-	if (data === "unauthorized") return { status: "unauthorized", trip: null, member: null };
-	if (data === "not-found") return { status: "not-found", trip: null, member: null };
+	if (data === "unauthorized")
+		return { status: "unauthorized", trip: null, member: null };
+	if (data === "not-found")
+		return { status: "not-found", trip: null, member: null };
 
 	return { status: "authorized", trip: data.trip, member: data.member };
 }

@@ -25,7 +25,12 @@ export const TripPage = () => {
 				<Text size="sm" c="gray.5">
 					링크가 잘못됐거나 삭제된 여행일 수 있어요.
 				</Text>
-				<Button variant="subtle" size="sm" mt="xs" onClick={() => navigate("/")}>
+				<Button
+					variant="subtle"
+					size="sm"
+					mt="xs"
+					onClick={() => navigate("/")}
+				>
 					홈으로 돌아가기
 				</Button>
 			</Stack>
@@ -41,7 +46,12 @@ export const TripPage = () => {
 				<Text size="sm" c="gray.5" ta="center">
 					초대 코드로 참여하거나, 복구 코드로 접근권을 복구해보세요.
 				</Text>
-				<Button variant="subtle" size="sm" mt="xs" onClick={() => navigate("/")}>
+				<Button
+					variant="subtle"
+					size="sm"
+					mt="xs"
+					onClick={() => navigate("/")}
+				>
 					홈으로 돌아가기
 				</Button>
 			</Stack>

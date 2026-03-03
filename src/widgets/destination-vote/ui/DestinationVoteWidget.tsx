@@ -15,8 +15,10 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 	const [proposeInput, setProposeInput] = useState("");
 	const [showProposeForm, setShowProposeForm] = useState(false);
 
-	const { proposals, totalVotes, myVotedProposalId } =
-		useDestinationProposals(tripId, memberId);
+	const { proposals, totalVotes, myVotedProposalId } = useDestinationProposals(
+		tripId,
+		memberId,
+	);
 
 	const propose = useProposeDestination();
 	const vote = useVoteDestination();
@@ -101,8 +103,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 												variant="light"
 												radius="xl"
 												loading={
-													vote.isPending &&
-													vote.variables?.proposalId === p.id
+													vote.isPending && vote.variables?.proposalId === p.id
 												}
 												onClick={() => handleVote(p.id)}
 											>
