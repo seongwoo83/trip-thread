@@ -1,7 +1,7 @@
 export type Trip = {
 	id: string;
 	name: string;
-	destination: string;
+	destination: string | null;
 	start_date: string;
 	end_date: string;
 	invite_code: string;
