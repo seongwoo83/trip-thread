@@ -13,7 +13,6 @@ import {
 
 type CreateTripInput = {
 	name: string;
-	destination: string;
 	start_date: string;
 	end_date: string;
 	nickname: string;
