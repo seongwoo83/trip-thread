@@ -1,7 +1,9 @@
 # trip-thread
+
 One Thread per Trip
 
 ---
+
 # CI/CD
 
 ## 🔵 CI (Continuous Integration)
