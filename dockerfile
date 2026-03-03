@@ -12,6 +12,12 @@ RUN if [ -f pnpm-lock.yaml ]; then pnpm i --frozen-lockfile; \
     else npm i; fi
 
 COPY . .
+
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_PUBLISHABLE_KEY
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_PUBLISHABLE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY
+
 RUN if [ -f pnpm-lock.yaml ]; then pnpm build; else npm run build; fi
 
 # 2) serve (nginx)
