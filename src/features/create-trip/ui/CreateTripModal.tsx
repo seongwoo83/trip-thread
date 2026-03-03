@@ -23,7 +23,6 @@ type Props = {
 
 const EMPTY_FORM = {
 	name: "",
-	destination: "",
 	start_date: "",
 	end_date: "",
 	nickname: "",
@@ -141,15 +140,7 @@ export const CreateTripModal = ({ opened, onClose }: Props) => {
 						value={form.name}
 						onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
 					/>
-					<TextInput
-						label="목적지"
-						placeholder="일본, 오사카"
-						required
-						value={form.destination}
-						onChange={(e) =>
-							setForm((f) => ({ ...f, destination: e.target.value }))
-						}
-					/>
+
 					<DatePickerInput
 						type="range"
 						label="여행 기간"
