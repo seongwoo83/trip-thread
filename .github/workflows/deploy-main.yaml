@@ -54,8 +54,17 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            set -e
             cd /opt/trip-thread
+
+            # 1️⃣ ECR 로그인 (매 배포마다 수행 - 토큰 만료 방지)
+            aws ecr get-login-password --region ap-northeast-2 \
+              | docker login --username AWS --password-stdin 522966066536.dkr.ecr.ap-northeast-2.amazonaws.com
+
+            # 2️⃣ 최신 이미지 pull + 강제 재생성
             docker compose pull
-            docker compose up -d
+            docker compose up -d --force-recreate
+
+            # 3️⃣ 정리 및 확인
             docker image prune -f
-            docker ps
+            docker ps --format "table {{.Names}}\t{{.Image}}\t{{.RunningFor}}\t{{.Ports}}"
