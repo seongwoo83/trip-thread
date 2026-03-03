@@ -35,7 +35,10 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t trip-thread .
+          docker build \
+            --build-arg VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }} \
+            --build-arg VITE_SUPABASE_PUBLISHABLE_KEY=${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }} \
+            -t trip-thread .
 
       - name: Tag Docker image
         run: |
