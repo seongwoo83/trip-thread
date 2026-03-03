@@ -1,12 +1,8 @@
 {
-	"editor.defaultFormatter": "oxfmt.oxfmt",
+	"editor.defaultFormatter": "oxc.oxc-vscode",
 	"editor.formatOnSave": true,
-	"[javascript]": { "editor.defaultFormatter": "oxfmt.oxfmt" },
-	"[javascriptreact]": { "editor.defaultFormatter": "oxfmt.oxfmt" },
-	"[typescript]": { "editor.defaultFormatter": "oxfmt.oxfmt" },
-	"[typescriptreact]": { "editor.defaultFormatter": "oxfmt.oxfmt" },
-	"[json]": { "editor.defaultFormatter": "oxfmt.oxfmt" },
-	"[jsonc]": { "editor.defaultFormatter": "oxfmt.oxfmt" },
-	"[css]": { "editor.defaultFormatter": "oxfmt.oxfmt" },
-	"[markdown]": { "editor.defaultFormatter": "oxfmt.oxfmt" }
+	"[javascript]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+	"[javascriptreact]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+	"[typescript]": { "editor.defaultFormatter": "oxc.oxc-vscode" },
+	"[typescriptreact]": { "editor.defaultFormatter": "oxc.oxc-vscode" }
 }
