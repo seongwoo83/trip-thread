@@ -28,7 +28,9 @@ const TripCard = ({ trip }: { trip: Trip }) => {
 			>
 				{trip.name}
 			</p>
-			<p className="mb-3 text-xs text-gray-500">{trip.destination ?? "목적지 투표 중"}</p>
+			<p className="mb-3 text-xs text-gray-500">
+				{trip.destination ?? "목적지 투표 중"}
+			</p>
 			<p className="text-xs text-gray-400">
 				{formatDateRange(trip.start_date, trip.end_date)}
 			</p>

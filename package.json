@@ -8,7 +8,11 @@
 		"build": "tsc -b && vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"write": "oxfmt"
+		"write": "oxfmt",
+		"prepare": "simple-git-hooks"
+	},
+	"simple-git-hooks": {
+		"pre-commit": "pnpm lint-staged"
 	},
 	"lint-staged": {
 		"**/*.{js,jsx,ts,tsx,json,css,md}": "oxfmt --no-error-on-unmatched-pattern"
@@ -38,7 +42,9 @@
 		"eslint-plugin-react-hooks": "^7.0.1",
 		"eslint-plugin-react-refresh": "^0.4.24",
 		"globals": "^16.5.0",
+		"lint-staged": "^16.3.1",
 		"oxfmt": "^0.35.0",
+		"simple-git-hooks": "^2.13.1",
 		"tailwindcss": "^4.2.0",
 		"typescript": "~5.9.3",
 		"typescript-eslint": "^8.48.0",
@@ -47,6 +53,9 @@
 	"pnpm": {
 		"overrides": {
 			"vite": "^8.0.0-beta.13"
-		}
+		},
+		"onlyBuiltDependencies": [
+			"simple-git-hooks"
+		]
 	}
 }
