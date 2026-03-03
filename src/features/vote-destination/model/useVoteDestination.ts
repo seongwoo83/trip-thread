@@ -26,9 +26,8 @@ export function useVoteDestination() {
 				.eq("trip_id", tripId);
 
 			const totalVotes = votes?.length ?? 0;
-			const votesForProposal = votes?.filter(
-				(v) => v.proposal_id === proposalId,
-			).length ?? 0;
+			const votesForProposal =
+				votes?.filter((v) => v.proposal_id === proposalId).length ?? 0;
 
 			if (totalVotes > 0 && votesForProposal > totalVotes / 2) {
 				const { data: winning } = await supabase

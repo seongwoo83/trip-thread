@@ -1,6 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/shared/api";
-import type { DestinationProposal, DestinationVote, ProposalWithVotes } from "./types";
+import type {
+	DestinationProposal,
+	DestinationVote,
+	ProposalWithVotes,
+} from "./types";
 
 type Result = {
 	proposals: ProposalWithVotes[];
@@ -21,10 +25,7 @@ export function useDestinationProposals(
 					.select("*")
 					.eq("trip_id", tripId)
 					.order("created_at", { ascending: true }),
-				supabase
-					.from("destination_votes")
-					.select("*")
-					.eq("trip_id", tripId),
+				supabase.from("destination_votes").select("*").eq("trip_id", tripId),
 			]);
 
 			const proposals = (proposalsRes.data ?? []) as DestinationProposal[];
