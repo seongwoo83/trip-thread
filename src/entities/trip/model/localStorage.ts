@@ -14,3 +14,7 @@ export function addLocalTripId(id: string): void {
 		localStorage.setItem(LOCAL_KEY, JSON.stringify([...ids, id]));
 	}
 }
+
+export function syncLocalTripIds(ids: string[]): void {
+	localStorage.setItem(LOCAL_KEY, JSON.stringify(ids));
+}
