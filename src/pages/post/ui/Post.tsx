@@ -1,11 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Loader, Stack, Text } from "@mantine/core";
 import { useTripAccess } from "@/entities/trip";
-import { DestinationVoteWidget } from "@/widgets/destination-vote";
-import { TripBoard } from "@/widgets/trip-board";
+import { PostThread } from "@/widgets/post-thread";
 
-export const TripPage = () => {
-	const { id } = useParams<{ id: string }>();
+export const PostPage = () => {
+	const { id, postId } = useParams<{ id: string; postId: string }>();
 	const navigate = useNavigate();
 	const { status, trip, member } = useTripAccess(id);
 
@@ -22,9 +21,6 @@ export const TripPage = () => {
 			<Stack align="center" gap="sm" pt={60}>
 				<Text size="lg" fw={600} c="gray.7">
 					여행을 찾을 수 없어요
-				</Text>
-				<Text size="sm" c="gray.5">
-					링크가 잘못됐거나 삭제된 여행일 수 있어요.
 				</Text>
 				<Button
 					variant="subtle"
@@ -44,9 +40,6 @@ export const TripPage = () => {
 				<Text size="lg" fw={600} c="gray.7">
 					이 여행의 멤버가 아니에요
 				</Text>
-				<Text size="sm" c="gray.5" ta="center">
-					초대 코드로 참여하거나, 복구 코드로 접근권을 복구해보세요.
-				</Text>
 				<Button
 					variant="subtle"
 					size="sm"
@@ -59,7 +52,6 @@ export const TripPage = () => {
 		);
 	}
 
-	// authorized
 	return (
 		<Stack gap="xl" pt="xl">
 			{/* 여행 헤더 */}
@@ -82,16 +74,7 @@ export const TripPage = () => {
 				)}
 			</div>
 
-			{/* destination null → 투표 위젯 / 확정 → 게시판 */}
-			{!trip!.destination ? (
-				<DestinationVoteWidget
-					tripId={trip!.id}
-					memberId={member!.id}
-					role={member!.role}
-				/>
-			) : (
-				<TripBoard tripId={trip!.id} memberId={member!.id} />
-			)}
+			<PostThread postId={postId!} tripId={trip!.id} memberId={member!.id} />
 		</Stack>
 	);
 };
