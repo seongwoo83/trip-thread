@@ -57,10 +57,21 @@ export const TripBoard = ({ tripId, memberId }: Props) => {
 								</span>
 							</div>
 
+							{/* 이미지 썸네일 */}
+							{post.image_url && (
+								<img
+									src={post.image_url}
+									alt=""
+									className="mt-2 h-40 w-full rounded-xl object-cover"
+								/>
+							)}
+
 							{/* 내용 */}
-							<p className="line-clamp-3 text-sm leading-relaxed text-gray-700">
-								{post.content}
-							</p>
+							{post.content && (
+								<p className="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-700">
+									{post.content}
+								</p>
+							)}
 
 							{/* 댓글 수 */}
 							<div className="mt-3 flex items-center gap-1 text-xs text-gray-400">
