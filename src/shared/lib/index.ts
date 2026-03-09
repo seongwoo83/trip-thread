@@ -7,3 +7,4 @@ export {
 	formatRecoveryCode,
 } from "@/shared/lib/crypto";
 export { getMemberToken, setMemberToken } from "@/shared/lib/memberToken";
+export { uploadTripPhoto } from "@/shared/lib/uploadImage";
