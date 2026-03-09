@@ -164,9 +164,18 @@ export const PostThread = ({ postId, tripId, memberId }: Props) => {
 						</p>
 					</div>
 				</div>
-				<p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800">
-					{post.content}
-				</p>
+				{post.image_url && (
+					<img
+						src={post.image_url}
+						alt=""
+						className="mb-3 w-full rounded-xl object-cover"
+					/>
+				)}
+				{post.content && (
+					<p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800">
+						{post.content}
+					</p>
+				)}
 			</div>
 
 			{/* 댓글 섹션 */}
