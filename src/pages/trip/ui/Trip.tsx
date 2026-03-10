@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Loader, Stack, Text } from "@mantine/core";
+import { useClipboard } from "@mantine/hooks";
 import { useTripAccess } from "@/entities/trip";
 import { DestinationVoteWidget } from "@/widgets/destination-vote";
 import { TripBoard } from "@/widgets/trip-board";
@@ -8,6 +9,7 @@ export const TripPage = () => {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const { status, trip, member } = useTripAccess(id);
+	const clipboard = useClipboard({ timeout: 2000 });
 
 	if (status === "loading") {
 		return (
@@ -60,6 +62,15 @@ export const TripPage = () => {
 	}
 
 	// authorized
+	const handleShare = () => {
+		const text = `Trip·Thread 초대 코드: ${trip!.invite_code}`;
+		if (navigator.share) {
+			navigator.share({ title: trip!.name, text });
+		} else {
+			clipboard.copy(trip!.invite_code);
+		}
+	};
+
 	return (
 		<Stack gap="xl" pt="xl">
 			{/* 여행 헤더 */}
@@ -67,12 +78,23 @@ export const TripPage = () => {
 				<Text size="xs" c="gray.4" mb={4}>
 					{trip!.start_date} ~ {trip!.end_date}
 				</Text>
-				<h1
-					className="text-2xl font-bold text-gray-900 tracking-tight"
-					style={{ fontFamily: "Paperozi" }}
-				>
-					{trip!.name}
-				</h1>
+				<div className="flex items-start justify-between gap-2">
+					<h1
+						className="text-2xl font-bold text-gray-900 tracking-tight"
+						style={{ fontFamily: "Paperozi" }}
+					>
+						{trip!.name}
+					</h1>
+					<Button
+						variant="subtle"
+						size="xs"
+						color={clipboard.copied ? "teal" : "gray"}
+						onClick={handleShare}
+						style={{ flexShrink: 0, marginTop: 4 }}
+					>
+						{clipboard.copied ? "복사됨 ✓" : "초대 공유"}
+					</Button>
+				</div>
 				{trip!.destination && (
 					<div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1">
 						<span className="text-xs font-medium text-indigo-600">
