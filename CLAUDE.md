@@ -286,11 +286,13 @@ comments
 - 호스트 전용: 여행 이름, 날짜 수정
 - Trip 페이지 내 설정 버튼 → 모달
 
-### (16) 멤버 목록 / 관리 ⬜
+### (16) 멤버 목록 ✅ / 멤버 관리 ⬜
 
-- Trip 페이지 내 멤버 목록 표시 (닉네임, 역할)
-- 호스트 전용: 멤버 강퇴 기능
-- `entities/trip-member` 슬라이스 추가 필요
+- 데스크톱: Trip 페이지 우측 사이드바에 항상 표시 (`sm:grid-cols-[1fr_220px]`)
+- 모바일: "멤버 보기" 버튼(hiddenFrom="sm") → Modal로 표시
+- 각 멤버: 이니셜 아바타 + 닉네임 + 호스트 뱃지 + "(나)" 표시
+- 구현: `entities/trip-member/model/useTripMembers.ts`, `widgets/trip-members/ui/TripMemberList.tsx`
+- **미구현**: 호스트 전용 멤버 강퇴 기능
 
 ### (17) 게시글 피드 페이지네이션 / 무한 스크롤 ⬜
 
