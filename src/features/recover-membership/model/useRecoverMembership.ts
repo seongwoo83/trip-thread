@@ -5,6 +5,7 @@ import type { Trip } from "@/entities/trip";
 import {
 	generateRecoveryCode,
 	generateToken,
+	getDeviceId,
 	hashToken,
 	setMemberToken,
 } from "@/shared/lib";
@@ -61,6 +62,7 @@ export function useRecoverMembership() {
 				.update({
 					member_token_hash: newMemberTokenHash,
 					recovery_code_hash: newRecoveryCodeHash,
+					device_id: getDeviceId(), // ← 새 기기의 device_id로 갱신
 				})
 				.eq("id", member.id);
 
