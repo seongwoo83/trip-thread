@@ -2,10 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { Loader, Stack, Text } from "@mantine/core";
 import { usePosts } from "@/entities/post";
 import { CreatePostForm } from "@/features/create-post";
+import { useDeletePost } from "@/features/delete-post";
+import { useMemberSession } from "@/shared/store";
 
 type Props = {
 	tripId: string;
-	memberId: string;
 };
 
 function formatRelativeTime(dateStr: string): string {
@@ -23,9 +24,13 @@ function avatarLetter(nickname: string) {
 	return nickname.charAt(0).toUpperCase();
 }
 
-export const TripBoard = ({ tripId, memberId }: Props) => {
+export const TripBoard = ({ tripId }: Props) => {
 	const navigate = useNavigate();
+	const { memberId, memberRole } = useMemberSession();
 	const { data: posts, isPending } = usePosts(tripId);
+	const deletePost = useDeletePost();
+
+	if (!memberId) return null;
 
 	return (
 		<Stack gap="md">
@@ -37,53 +42,74 @@ export const TripBoard = ({ tripId, memberId }: Props) => {
 				</div>
 			) : posts && posts.length > 0 ? (
 				<Stack gap="sm">
-					{posts.map((post) => (
-						<button
-							key={post.id}
-							type="button"
-							className="w-full rounded-2xl border border-gray-200 bg-white p-4 text-left transition-colors hover:bg-gray-50 active:bg-gray-100"
-							onClick={() => navigate(`/trip/${tripId}/post/${post.id}`)}
-						>
-							{/* 작성자 */}
-							<div className="mb-2 flex items-center gap-2">
-								<div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">
-									{avatarLetter(post.author.nickname)}
+					{posts.map((post) => {
+						const canDelete =
+							post.author.id === memberId || memberRole === "host";
+
+						return (
+							<div
+								key={post.id}
+								className="w-full rounded-2xl border border-gray-200 bg-white p-4 text-left transition-colors hover:bg-gray-50 cursor-pointer"
+								onClick={() => navigate(`/trip/${tripId}/post/${post.id}`)}
+							>
+								{/* 작성자 + 삭제 */}
+								<div className="mb-2 flex items-center gap-2">
+									<div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">
+										{avatarLetter(post.author.nickname)}
+									</div>
+									<span className="text-sm font-semibold text-gray-800">
+										{post.author.nickname}
+									</span>
+									<span className="ml-auto text-xs text-gray-400">
+										{formatRelativeTime(post.created_at)}
+									</span>
+									{canDelete && (
+										<button
+											type="button"
+											className="text-xs text-gray-400 hover:text-red-500"
+											disabled={deletePost.isPending}
+											onClick={(e) => {
+												e.stopPropagation();
+												deletePost.mutate({
+													postId: post.id,
+													tripId,
+													imageUrl: post.image_url,
+												});
+											}}
+										>
+											삭제
+										</button>
+									)}
 								</div>
-								<span className="text-sm font-semibold text-gray-800">
-									{post.author.nickname}
-								</span>
-								<span className="ml-auto text-xs text-gray-400">
-									{formatRelativeTime(post.created_at)}
-								</span>
+
+								{/* 이미지 썸네일 */}
+								{post.image_url && (
+									<img
+										src={post.image_url}
+										alt=""
+										className="mt-2 h-40 w-full rounded-xl object-cover"
+									/>
+								)}
+
+								{/* 내용 */}
+								{post.content && (
+									<p className="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-700">
+										{post.content}
+									</p>
+								)}
+
+								{/* 댓글 수 */}
+								<div className="mt-3 flex items-center gap-1 text-xs text-gray-400">
+									<span>💬</span>
+									<span>
+										{post.comment_count > 0
+											? `${post.comment_count}개의 댓글`
+											: "댓글 달기"}
+									</span>
+								</div>
 							</div>
-
-							{/* 이미지 썸네일 */}
-							{post.image_url && (
-								<img
-									src={post.image_url}
-									alt=""
-									className="mt-2 h-40 w-full rounded-xl object-cover"
-								/>
-							)}
-
-							{/* 내용 */}
-							{post.content && (
-								<p className="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-700">
-									{post.content}
-								</p>
-							)}
-
-							{/* 댓글 수 */}
-							<div className="mt-3 flex items-center gap-1 text-xs text-gray-400">
-								<span>💬</span>
-								<span>
-									{post.comment_count > 0
-										? `${post.comment_count}개의 댓글`
-										: "댓글 달기"}
-								</span>
-							</div>
-						</button>
-					))}
+						);
+					})}
 				</Stack>
 			) : (
 				<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 py-16 text-center">

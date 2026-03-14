@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader, Stack, Text } from "@mantine/core";
+import { Button, Loader, Stack, Text, Textarea } from "@mantine/core";
 import { usePost } from "@/entities/post";
 import { useComments, type CommentWithMeta } from "@/entities/comment";
 import { CreateCommentForm } from "@/features/create-comment";
+import { useDeletePost } from "@/features/delete-post";
+import { useDeleteComment } from "@/features/delete-comment";
+import { EditPostForm } from "@/features/edit-post";
+import { useEditComment } from "@/features/edit-comment";
+import { useMemberSession } from "@/shared/store";
 
 type Props = {
 	postId: string;
 	tripId: string;
-	memberId: string;
 };
 
 function formatRelativeTime(dateStr: string): string {
@@ -29,12 +33,37 @@ function avatarLetter(nickname: string) {
 type CommentNodeProps = {
 	comment: CommentWithMeta;
 	postId: string;
+	tripId: string;
 	memberId: string;
+	memberRole: "host" | "member" | null;
 };
 
-const CommentNode = ({ comment, postId, memberId }: CommentNodeProps) => {
+const CommentNode = ({
+	comment,
+	postId,
+	tripId,
+	memberId,
+	memberRole,
+}: CommentNodeProps) => {
 	const [replying, setReplying] = useState(false);
+	const [editing, setEditing] = useState(false);
+	const [editContent, setEditContent] = useState(comment.content);
 	const canReply = comment.depth < 2;
+	const canDelete = comment.author.id === memberId || memberRole === "host";
+	const canEdit = comment.author.id === memberId;
+	const deleteComment = useDeleteComment();
+	const editComment = useEditComment();
+
+	const handleEditSubmit = async (e: { preventDefault(): void }) => {
+		e.preventDefault();
+		if (!editContent.trim()) return;
+		await editComment.mutateAsync({
+			commentId: comment.id,
+			postId,
+			content: editContent,
+		});
+		setEditing(false);
+	};
 
 	return (
 		<div>
@@ -58,15 +87,72 @@ const CommentNode = ({ comment, postId, memberId }: CommentNodeProps) => {
 					<span className="ml-auto text-xs text-gray-400">
 						{formatRelativeTime(comment.created_at)}
 					</span>
+					{canEdit && !editing && (
+						<button
+							type="button"
+							className="text-xs text-gray-400 hover:text-indigo-500"
+							onClick={() => {
+								setEditContent(comment.content);
+								setEditing(true);
+							}}
+						>
+							수정
+						</button>
+					)}
+					{canDelete && (
+						<button
+							type="button"
+							className="text-xs text-gray-400 hover:text-red-500"
+							disabled={deleteComment.isPending}
+							onClick={() =>
+								deleteComment.mutate({ commentId: comment.id, postId, tripId })
+							}
+						>
+							삭제
+						</button>
+					)}
 				</div>
 
-				{/* 내용 */}
-				<p className="text-sm leading-relaxed text-gray-700">
-					{comment.content}
-				</p>
+				{/* 내용 or 수정 폼 */}
+				{editing ? (
+					<form onSubmit={handleEditSubmit} className="mt-1">
+						<Textarea
+							value={editContent}
+							onChange={(e) => setEditContent(e.target.value)}
+							minRows={1}
+							autosize
+							styles={{ input: { fontSize: "0.875rem", resize: "none" } }}
+						/>
+						<div className="mt-2 flex gap-2">
+							<Button
+								type="button"
+								variant="subtle"
+								size="xs"
+								radius="xl"
+								color="gray"
+								onClick={() => setEditing(false)}
+							>
+								취소
+							</Button>
+							<Button
+								type="submit"
+								size="xs"
+								radius="xl"
+								loading={editComment.isPending}
+								disabled={!editContent.trim()}
+							>
+								저장
+							</Button>
+						</div>
+					</form>
+				) : (
+					<p className="text-sm leading-relaxed text-gray-700">
+						{comment.content}
+					</p>
+				)}
 
 				{/* 답글 버튼 */}
-				{canReply && (
+				{canReply && !editing && (
 					<button
 						type="button"
 						className="mt-1.5 text-xs text-gray-400 hover:text-indigo-500"
@@ -99,7 +185,9 @@ const CommentNode = ({ comment, postId, memberId }: CommentNodeProps) => {
 							key={reply.id}
 							comment={reply}
 							postId={postId}
+							tripId={tripId}
 							memberId={memberId}
+							memberRole={memberRole}
 						/>
 					))}
 				</Stack>
@@ -108,10 +196,15 @@ const CommentNode = ({ comment, postId, memberId }: CommentNodeProps) => {
 	);
 };
 
-export const PostThread = ({ postId, tripId, memberId }: Props) => {
+export const PostThread = ({ postId, tripId }: Props) => {
 	const navigate = useNavigate();
+	const { memberId, memberRole } = useMemberSession();
 	const { data: post, isPending: postLoading } = usePost(postId);
 	const { data: comments, isPending: commentsLoading } = useComments(postId);
+	const deletePost = useDeletePost();
+	const [editingPost, setEditingPost] = useState(false);
+
+	if (!memberId) return null;
 
 	if (postLoading) {
 		return (
@@ -138,6 +231,9 @@ export const PostThread = ({ postId, tripId, memberId }: Props) => {
 		);
 	}
 
+	const canEditPost = post.author.id === memberId;
+	const canDeletePost = post.author.id === memberId || memberRole === "host";
+
 	return (
 		<Stack gap="xl">
 			{/* 뒤로가기 */}
@@ -163,18 +259,58 @@ export const PostThread = ({ postId, tripId, memberId }: Props) => {
 							{formatRelativeTime(post.created_at)}
 						</p>
 					</div>
+					<div className="ml-auto flex gap-2">
+						{canEditPost && !editingPost && (
+							<button
+								type="button"
+								className="text-xs text-gray-400 hover:text-indigo-500"
+								onClick={() => setEditingPost(true)}
+							>
+								수정
+							</button>
+						)}
+						{canDeletePost && (
+							<button
+								type="button"
+								className="text-xs text-gray-400 hover:text-red-500"
+								disabled={deletePost.isPending}
+								onClick={() =>
+									deletePost.mutate(
+										{ postId: post.id, tripId, imageUrl: post.image_url },
+										{ onSuccess: () => navigate(`/trip/${tripId}`) },
+									)
+								}
+							>
+								삭제
+							</button>
+						)}
+					</div>
 				</div>
-				{post.image_url && (
-					<img
-						src={post.image_url}
-						alt=""
-						className="mb-3 w-full rounded-xl object-cover"
+
+				{editingPost ? (
+					<EditPostForm
+						postId={post.id}
+						tripId={tripId}
+						initialContent={post.content ?? ""}
+						initialImageUrl={post.image_url}
+						onCancel={() => setEditingPost(false)}
+						onSuccess={() => setEditingPost(false)}
 					/>
-				)}
-				{post.content && (
-					<p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800">
-						{post.content}
-					</p>
+				) : (
+					<>
+						{post.image_url && (
+							<img
+								src={post.image_url}
+								alt=""
+								className="mb-3 w-full rounded-xl object-cover"
+							/>
+						)}
+						{post.content && (
+							<p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800">
+								{post.content}
+							</p>
+						)}
+					</>
 				)}
 			</div>
 
@@ -201,7 +337,9 @@ export const PostThread = ({ postId, tripId, memberId }: Props) => {
 								key={comment.id}
 								comment={comment}
 								postId={postId}
+								tripId={tripId}
 								memberId={memberId}
+								memberRole={memberRole}
 							/>
 						))}
 					</Stack>
