@@ -4,6 +4,8 @@ import { Loader, Stack, Text } from "@mantine/core";
 import { usePost } from "@/entities/post";
 import { useComments, type CommentWithMeta } from "@/entities/comment";
 import { CreateCommentForm } from "@/features/create-comment";
+import { useDeletePost } from "@/features/delete-post";
+import { useDeleteComment } from "@/features/delete-comment";
 import { useMemberSession } from "@/shared/store";
 
 type Props = {
@@ -30,11 +32,19 @@ type CommentNodeProps = {
 	comment: CommentWithMeta;
 	postId: string;
 	memberId: string;
+	memberRole: "host" | "member" | null;
 };
 
-const CommentNode = ({ comment, postId, memberId }: CommentNodeProps) => {
+const CommentNode = ({
+	comment,
+	postId,
+	memberId,
+	memberRole,
+}: CommentNodeProps) => {
 	const [replying, setReplying] = useState(false);
 	const canReply = comment.depth < 2;
+	const canDelete = comment.author.id === memberId || memberRole === "host";
+	const deleteComment = useDeleteComment();
 
 	return (
 		<div>
@@ -58,6 +68,18 @@ const CommentNode = ({ comment, postId, memberId }: CommentNodeProps) => {
 					<span className="ml-auto text-xs text-gray-400">
 						{formatRelativeTime(comment.created_at)}
 					</span>
+					{canDelete && (
+						<button
+							type="button"
+							className="text-xs text-gray-400 hover:text-red-500"
+							disabled={deleteComment.isPending}
+							onClick={() =>
+								deleteComment.mutate({ commentId: comment.id, postId })
+							}
+						>
+							삭제
+						</button>
+					)}
 				</div>
 
 				{/* 내용 */}
@@ -100,6 +122,7 @@ const CommentNode = ({ comment, postId, memberId }: CommentNodeProps) => {
 							comment={reply}
 							postId={postId}
 							memberId={memberId}
+							memberRole={memberRole}
 						/>
 					))}
 				</Stack>
@@ -110,9 +133,10 @@ const CommentNode = ({ comment, postId, memberId }: CommentNodeProps) => {
 
 export const PostThread = ({ postId, tripId }: Props) => {
 	const navigate = useNavigate();
-	const { memberId } = useMemberSession();
+	const { memberId, memberRole } = useMemberSession();
 	const { data: post, isPending: postLoading } = usePost(postId);
 	const { data: comments, isPending: commentsLoading } = useComments(postId);
+	const deletePost = useDeletePost();
 
 	if (!memberId) return null;
 
@@ -141,6 +165,8 @@ export const PostThread = ({ postId, tripId }: Props) => {
 		);
 	}
 
+	const canDeletePost = post.author.id === memberId || memberRole === "host";
+
 	return (
 		<Stack gap="xl">
 			{/* 뒤로가기 */}
@@ -166,6 +192,21 @@ export const PostThread = ({ postId, tripId }: Props) => {
 							{formatRelativeTime(post.created_at)}
 						</p>
 					</div>
+					{canDeletePost && (
+						<button
+							type="button"
+							className="ml-auto text-xs text-gray-400 hover:text-red-500"
+							disabled={deletePost.isPending}
+							onClick={() =>
+								deletePost.mutate(
+									{ postId: post.id, tripId, imageUrl: post.image_url },
+									{ onSuccess: () => navigate(`/trip/${tripId}`) },
+								)
+							}
+						>
+							삭제
+						</button>
+					)}
 				</div>
 				{post.image_url && (
 					<img
@@ -205,6 +246,7 @@ export const PostThread = ({ postId, tripId }: Props) => {
 								comment={comment}
 								postId={postId}
 								memberId={memberId}
+								memberRole={memberRole}
 							/>
 						))}
 					</Stack>
