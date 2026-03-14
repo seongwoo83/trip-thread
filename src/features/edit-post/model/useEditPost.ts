@@ -14,7 +14,8 @@ type Input = {
 async function deleteStorageImage(imageUrl: string) {
 	const path = imageUrl.split("/trip-photos/")[1];
 	if (!path) return;
-	await supabase.storage.from("trip-photos").remove([path]);
+	const { error } = await supabase.storage.from("trip-photos").remove([path]);
+	if (error) throw new Error(error.message);
 }
 
 export function useEditPost() {
