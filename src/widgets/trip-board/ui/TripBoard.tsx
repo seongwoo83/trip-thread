@@ -2,10 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { Loader, Stack, Text } from "@mantine/core";
 import { usePosts } from "@/entities/post";
 import { CreatePostForm } from "@/features/create-post";
+import { useMemberSession } from "@/shared/store";
 
 type Props = {
 	tripId: string;
-	memberId: string;
 };
 
 function formatRelativeTime(dateStr: string): string {
@@ -23,9 +23,12 @@ function avatarLetter(nickname: string) {
 	return nickname.charAt(0).toUpperCase();
 }
 
-export const TripBoard = ({ tripId, memberId }: Props) => {
+export const TripBoard = ({ tripId }: Props) => {
 	const navigate = useNavigate();
+	const { memberId } = useMemberSession();
 	const { data: posts, isPending } = usePosts(tripId);
+
+	if (!memberId) return null;
 
 	return (
 		<Stack gap="md">
