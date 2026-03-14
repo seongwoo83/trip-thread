@@ -207,6 +207,26 @@ comments
 - `shared/lib/uploadImage.ts`: `trip-photos` bucket에 업로드 → public URL 반환
 - 경로: `{tripId}/{uuid}.{ext}`
 
+**(11) 게시글 / 댓글 삭제 — `features/delete-post`, `features/delete-comment`** ✅
+
+- 본인 게시글/댓글만 삭제 가능, 호스트는 모든 게시글/댓글 삭제 가능
+- 게시글 삭제 시 Storage 이미지 먼저 삭제 → posts 행 삭제 (댓글은 DB의 `ON DELETE CASCADE`로 자동 삭제)
+- 댓글 삭제 시 `["comments", postId]` + `["posts", tripId]` 양쪽 invalidate (피드 댓글 수 동기화)
+- UI: 게시글 피드 카드 + 스레드 상세 양쪽에 "삭제" 버튼 표시
+
+**(12) 게시글 / 댓글 수정 — `features/edit-post`, `features/edit-comment`** ✅
+
+- 본인 게시글/댓글만 수정 가능
+- 게시글: 인라인 `EditPostForm` (텍스트 + 이미지 교체/삭제), 기존 Storage 파일 삭제 후 새 파일 업로드
+- 댓글: 인라인 Textarea → 저장/취소 버튼 전환
+- Storage 오류 시 에러 throw로 뮤테이션 실패 처리
+
+**(공통) 멤버 세션 스토어 — `shared/store/memberSession.ts`** ✅
+
+- 인증된 멤버의 `id`와 `role`을 Zustand로 전역 관리
+- `useTripAccess`에서 인증 성공 시 자동 set, 언마운트 시 clear
+- 위젯/피처에서 prop drilling 없이 `useMemberSession()` 직접 소비
+
 ---
 
 ## 현재 슬라이스 전체 목록
@@ -230,8 +250,12 @@ comments
 | `features/propose-destination` | `useProposeDestination.ts`                              | 여행지 제안               |
 | `features/vote-destination`    | `useVoteDestination.ts`                                 | 여행지 투표 + 자동 확정   |
 | `features/confirm-destination` | `useConfirmDestination.ts`                              | 호스트 수동 확정          |
-| `features/create-post`         | `useCreatePost.ts`, `CreatePostForm.tsx`                | 게시글 작성 (이미지 포함) |
-| `features/create-comment`      | `useCreateComment.ts`, `CreateCommentForm.tsx`          | 댓글 작성 (중첩 지원)     |
+| `features/create-post`         | `useCreatePost.ts`, `CreatePostForm.tsx`                | 게시글 작성 (이미지 포함)       |
+| `features/create-comment`      | `useCreateComment.ts`, `CreateCommentForm.tsx`          | 댓글 작성 (중첩 지원)           |
+| `features/delete-post`         | `useDeletePost.ts`                                      | 게시글 삭제 (Storage 이미지 포함) |
+| `features/delete-comment`      | `useDeleteComment.ts`                                   | 댓글 삭제                       |
+| `features/edit-post`           | `useEditPost.ts`, `EditPostForm.tsx`                    | 게시글 수정 (이미지 교체/삭제)  |
+| `features/edit-comment`        | `useEditComment.ts`                                     | 댓글 수정                       |
 
 ### Widgets
 
@@ -246,28 +270,16 @@ comments
 
 | 모듈                        | 설명                                 |
 | --------------------------- | ------------------------------------ |
-| `shared/api/supabase.ts`    | Supabase 클라이언트 싱글톤           |
-| `shared/lib/deviceId.ts`    | device_id get-or-create              |
-| `shared/lib/memberToken.ts` | member_token localStorage read/write |
-| `shared/lib/crypto.ts`      | SHA-256 해싱, 토큰/코드 생성         |
-| `shared/lib/uploadImage.ts` | Supabase Storage 이미지 업로드       |
+| `shared/api/supabase.ts`           | Supabase 클라이언트 싱글톤                       |
+| `shared/lib/deviceId.ts`           | device_id get-or-create                          |
+| `shared/lib/memberToken.ts`        | member_token localStorage read/write             |
+| `shared/lib/crypto.ts`             | SHA-256 해싱, 토큰/코드 생성                     |
+| `shared/lib/uploadImage.ts`        | Supabase Storage 이미지 업로드                   |
+| `shared/store/memberSession.ts`    | 인증된 멤버 id/role 전역 Zustand 스토어          |
 
 ---
 
 ## 앞으로 해야 할 것
-
-### (11) 게시글 / 댓글 삭제 — `features/delete-post`, `features/delete-comment` ⬜
-
-- 본인 게시글/댓글만 삭제 가능 (author_id == 내 member.id 확인)
-- 호스트는 모든 게시글/댓글 삭제 가능
-- 게시글 삭제 시 연결된 댓글, 이미지(Storage)도 같이 삭제
-- UI: 게시글/댓글에 "삭제" 버튼 (본인 + 호스트만 표시)
-
-### (12) 게시글 / 댓글 수정 — `features/edit-post`, `features/edit-comment` ⬜
-
-- 본인 게시글/댓글 내용 수정
-- 인라인 편집 UI (수정 버튼 클릭 → textarea로 전환)
-- 이미지도 교체 가능 (기존 Storage 파일 삭제 후 새 파일 업로드)
 
 ### (13) 실시간 업데이트 — Supabase Realtime ⬜
 
