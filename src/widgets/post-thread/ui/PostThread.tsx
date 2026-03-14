@@ -33,6 +33,7 @@ function avatarLetter(nickname: string) {
 type CommentNodeProps = {
 	comment: CommentWithMeta;
 	postId: string;
+	tripId: string;
 	memberId: string;
 	memberRole: "host" | "member" | null;
 };
@@ -40,6 +41,7 @@ type CommentNodeProps = {
 const CommentNode = ({
 	comment,
 	postId,
+	tripId,
 	memberId,
 	memberRole,
 }: CommentNodeProps) => {
@@ -103,7 +105,7 @@ const CommentNode = ({
 							className="text-xs text-gray-400 hover:text-red-500"
 							disabled={deleteComment.isPending}
 							onClick={() =>
-								deleteComment.mutate({ commentId: comment.id, postId })
+								deleteComment.mutate({ commentId: comment.id, postId, tripId })
 							}
 						>
 							삭제
@@ -183,6 +185,7 @@ const CommentNode = ({
 							key={reply.id}
 							comment={reply}
 							postId={postId}
+							tripId={tripId}
 							memberId={memberId}
 							memberRole={memberRole}
 						/>
@@ -334,6 +337,7 @@ export const PostThread = ({ postId, tripId }: Props) => {
 								key={comment.id}
 								comment={comment}
 								postId={postId}
+								tripId={tripId}
 								memberId={memberId}
 								memberRole={memberRole}
 							/>
