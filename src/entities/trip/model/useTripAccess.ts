@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/shared/api";
 import { getDeviceId, getMemberToken, hashToken } from "@/shared/lib";
+import { useMemberSession } from "@/shared/store";
 import type { Trip, TripMember } from "./types";
 
 type AccessStatus = "loading" | "authorized" | "unauthorized" | "not-found";
@@ -12,6 +14,7 @@ type TripAccessResult = {
 };
 
 export function useTripAccess(tripId: string | undefined): TripAccessResult {
+	const { setMember, clearMember } = useMemberSession();
 	const { data, isPending } = useQuery({
 		queryKey: ["trip-access", tripId],
 		queryFn: async () => {
@@ -48,6 +51,15 @@ export function useTripAccess(tripId: string | undefined): TripAccessResult {
 		},
 		enabled: !!tripId,
 	});
+
+	useEffect(() => {
+		if (data && data !== "unauthorized" && data !== "not-found") {
+			setMember(data.member.id, data.member.role);
+		} else if (!isPending) {
+			clearMember();
+		}
+		return () => clearMember();
+	}, [data, isPending, setMember, clearMember]);
 
 	if (isPending) return { status: "loading", trip: null, member: null };
 	if (!data) return { status: "not-found", trip: null, member: null };
