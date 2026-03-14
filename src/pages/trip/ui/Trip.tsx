@@ -135,7 +135,7 @@ export const TripPage = () => {
 								role={member!.role}
 							/>
 						) : (
-							<TripBoard tripId={trip!.id} memberId={member!.id} />
+							<TripBoard tripId={trip!.id} />
 						)}
 					</div>
 

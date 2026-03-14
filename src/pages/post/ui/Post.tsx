@@ -6,7 +6,7 @@ import { PostThread } from "@/widgets/post-thread";
 export const PostPage = () => {
 	const { id, postId } = useParams<{ id: string; postId: string }>();
 	const navigate = useNavigate();
-	const { status, trip, member } = useTripAccess(id);
+	const { status, trip } = useTripAccess(id);
 
 	if (status === "loading") {
 		return (
@@ -74,7 +74,7 @@ export const PostPage = () => {
 				)}
 			</div>
 
-			<PostThread postId={postId!} tripId={trip!.id} memberId={member!.id} />
+			<PostThread postId={postId!} tripId={trip!.id} />
 		</Stack>
 	);
 };
