@@ -4,11 +4,11 @@ import { Loader, Stack, Text } from "@mantine/core";
 import { usePost } from "@/entities/post";
 import { useComments, type CommentWithMeta } from "@/entities/comment";
 import { CreateCommentForm } from "@/features/create-comment";
+import { useMemberSession } from "@/shared/store";
 
 type Props = {
 	postId: string;
 	tripId: string;
-	memberId: string;
 };
 
 function formatRelativeTime(dateStr: string): string {
@@ -108,10 +108,13 @@ const CommentNode = ({ comment, postId, memberId }: CommentNodeProps) => {
 	);
 };
 
-export const PostThread = ({ postId, tripId, memberId }: Props) => {
+export const PostThread = ({ postId, tripId }: Props) => {
 	const navigate = useNavigate();
+	const { memberId } = useMemberSession();
 	const { data: post, isPending: postLoading } = usePost(postId);
 	const { data: comments, isPending: commentsLoading } = useComments(postId);
+
+	if (!memberId) return null;
 
 	if (postLoading) {
 		return (
