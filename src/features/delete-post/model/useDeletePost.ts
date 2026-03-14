@@ -10,7 +10,8 @@ type Input = {
 async function deleteStorageImage(imageUrl: string) {
 	const path = imageUrl.split("/trip-photos/")[1];
 	if (!path) return;
-	await supabase.storage.from("trip-photos").remove([path]);
+	const { error } = await supabase.storage.from("trip-photos").remove([path]);
+	if (error) throw new Error(error.message);
 }
 
 export function useDeletePost() {
@@ -18,10 +19,9 @@ export function useDeletePost() {
 
 	return useMutation({
 		mutationFn: async ({ postId, tripId, imageUrl }: Input) => {
-			await supabase.from("comments").delete().eq("post_id", postId);
-
 			if (imageUrl) await deleteStorageImage(imageUrl);
 
+			// comments는 DB의 ON DELETE CASCADE로 자동 삭제됨
 			const { error } = await supabase.from("posts").delete().eq("id", postId);
 			if (error) throw new Error(error.message);
 
