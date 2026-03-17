@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Loader, Stack, Text } from "@mantine/core";
-import { usePosts } from "@/entities/post";
+import { usePosts, useRealtimePosts } from "@/entities/post";
 import { CreatePostForm } from "@/features/create-post";
 import { useDeletePost } from "@/features/delete-post";
 import { useMemberSession } from "@/shared/store";
@@ -27,6 +27,7 @@ function avatarLetter(nickname: string) {
 export const TripBoard = ({ tripId }: Props) => {
 	const navigate = useNavigate();
 	const { memberId, memberRole } = useMemberSession();
+	useRealtimePosts(tripId);
 	const { data: posts, isPending } = usePosts(tripId);
 	const deletePost = useDeletePost();
 

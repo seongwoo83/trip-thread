@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Loader, Stack, Text, Textarea } from "@mantine/core";
-import { usePost } from "@/entities/post";
-import { useComments, type CommentWithMeta } from "@/entities/comment";
+import { usePost, useRealtimePosts } from "@/entities/post";
+import {
+	useComments,
+	useRealtimeComments,
+	type CommentWithMeta,
+} from "@/entities/comment";
 import { CreateCommentForm } from "@/features/create-comment";
 import { useDeletePost } from "@/features/delete-post";
 import { useDeleteComment } from "@/features/delete-comment";
@@ -199,6 +203,8 @@ const CommentNode = ({
 export const PostThread = ({ postId, tripId }: Props) => {
 	const navigate = useNavigate();
 	const { memberId, memberRole } = useMemberSession();
+	useRealtimePosts(tripId);
+	useRealtimeComments(postId, tripId);
 	const { data: post, isPending: postLoading } = usePost(postId);
 	const { data: comments, isPending: commentsLoading } = useComments(postId);
 	const deletePost = useDeletePost();
