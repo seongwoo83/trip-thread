@@ -1,0 +1,40 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { supabase } from "@/shared/api";
+import type { PostWithMeta } from "./types";
+
+export const POSTS_PAGE_SIZE = 15;
+
+export function useInfinitePosts(tripId: string) {
+	return useInfiniteQuery<PostWithMeta[]>({
+		queryKey: ["posts", tripId],
+		queryFn: async ({ pageParam }) => {
+			const from = pageParam as number;
+			const { data, error } = await supabase
+				.from("posts")
+				.select(
+					`*, author:trip_members!posts_author_id_fkey(id, nickname), comments(count)`,
+				)
+				.eq("trip_id", tripId)
+				.order("created_at", { ascending: false })
+				.range(from, from + POSTS_PAGE_SIZE - 1);
+
+			if (error) throw new Error(error.message);
+
+			return (data ?? []).map((row) => {
+				const r = row as typeof row & {
+					author: { id: string; nickname: string };
+					comments: { count: number }[];
+				};
+				return {
+					...r,
+					author: r.author,
+					comment_count: r.comments[0]?.count ?? 0,
+				};
+			});
+		},
+		getNextPageParam: (lastPage, allPages) =>
+			lastPage.length < POSTS_PAGE_SIZE ? undefined : allPages.flat().length,
+		initialPageParam: 0,
+		enabled: !!tripId,
+	});
+}
