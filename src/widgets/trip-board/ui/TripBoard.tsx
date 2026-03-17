@@ -1,6 +1,7 @@
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader, Stack, Text } from "@mantine/core";
-import { usePosts, useRealtimePosts } from "@/entities/post";
+import { useInfinitePosts, useRealtimePosts } from "@/entities/post";
 import { CreatePostForm } from "@/features/create-post";
 import { useDeletePost } from "@/features/delete-post";
 import { useMemberSession } from "@/shared/store";
@@ -27,9 +28,32 @@ function avatarLetter(nickname: string) {
 export const TripBoard = ({ tripId }: Props) => {
 	const navigate = useNavigate();
 	const { memberId, memberRole } = useMemberSession();
+
 	useRealtimePosts(tripId);
-	const { data: posts, isPending } = usePosts(tripId);
+	const { data, isPending, isFetchingNextPage, hasNextPage, fetchNextPage } =
+		useInfinitePosts(tripId);
 	const deletePost = useDeletePost();
+
+	const posts = data?.pages.flat() ?? [];
+
+	// 센티널 요소가 뷰포트에 들어오면 다음 페이지 로드
+	const sentinelRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		const el = sentinelRef.current;
+		if (!el) return;
+
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+					fetchNextPage();
+				}
+			},
+			{ threshold: 0.1 },
+		);
+
+		observer.observe(el);
+		return () => observer.disconnect();
+	}, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
 	if (!memberId) return null;
 
@@ -41,7 +65,7 @@ export const TripBoard = ({ tripId }: Props) => {
 				<div className="flex justify-center py-12">
 					<Loader size="sm" color="indigo" />
 				</div>
-			) : posts && posts.length > 0 ? (
+			) : posts.length > 0 ? (
 				<Stack gap="sm">
 					{posts.map((post) => {
 						const canDelete =
@@ -111,6 +135,21 @@ export const TripBoard = ({ tripId }: Props) => {
 							</div>
 						);
 					})}
+
+					{/* 무한 스크롤 센티널 */}
+					<div ref={sentinelRef} />
+
+					{isFetchingNextPage && (
+						<div className="flex justify-center py-4">
+							<Loader size="xs" color="indigo" />
+						</div>
+					)}
+
+					{!hasNextPage && posts.length > 0 && (
+						<Text size="xs" c="gray.4" ta="center" py="sm">
+							모든 스레드를 불러왔어요
+						</Text>
+					)}
 				</Stack>
 			) : (
 				<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 py-16 text-center">
