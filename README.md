@@ -46,14 +46,14 @@ One Thread per Trip
 
 ## 기술 스택
 
-| 분류         | 사용 기술                                      |
-| ------------ | ---------------------------------------------- |
-| Frontend     | React 19, TypeScript, Vite                     |
-| UI           | Mantine v7, Tailwind CSS                       |
-| 상태 관리    | TanStack Query v5 (서버), Zustand (클라이언트) |
-| 백엔드/DB    | Supabase (PostgreSQL + Storage + Auth-less RLS) |
-| 아키텍처     | Feature-Sliced Design (FSD)                    |
-| 배포         | AWS EC2 + ECR, Docker + nginx, GitHub Actions  |
+| 분류      | 사용 기술                                       |
+| --------- | ----------------------------------------------- |
+| Frontend  | React 19, TypeScript, Vite                      |
+| UI        | Mantine v7, Tailwind CSS                        |
+| 상태 관리 | TanStack Query v5 (서버), Zustand (클라이언트)  |
+| 백엔드/DB | Supabase (PostgreSQL + Storage + Auth-less RLS) |
+| 아키텍처  | Feature-Sliced Design (FSD)                     |
+| 배포      | AWS EC2 + ECR, Docker + nginx, GitHub Actions   |
 
 ---
 

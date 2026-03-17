@@ -242,20 +242,20 @@ comments
 
 ### Features
 
-| 슬라이스                       | 주요 파일                                               | 설명                      |
-| ------------------------------ | ------------------------------------------------------- | ------------------------- |
-| `features/create-trip`         | `useCreateTrip.ts`, `CreateTripModal.tsx`               | 여행 생성                 |
-| `features/join-trip`           | `useJoinTrip.ts`, `JoinTripForm.tsx`                    | 초대 코드로 참여          |
-| `features/recover-membership`  | `useRecoverMembership.ts`, `RecoverMembershipModal.tsx` | 복구 코드 재발급          |
-| `features/propose-destination` | `useProposeDestination.ts`                              | 여행지 제안               |
-| `features/vote-destination`    | `useVoteDestination.ts`                                 | 여행지 투표 + 자동 확정   |
-| `features/confirm-destination` | `useConfirmDestination.ts`                              | 호스트 수동 확정          |
-| `features/create-post`         | `useCreatePost.ts`, `CreatePostForm.tsx`                | 게시글 작성 (이미지 포함)       |
-| `features/create-comment`      | `useCreateComment.ts`, `CreateCommentForm.tsx`          | 댓글 작성 (중첩 지원)           |
+| 슬라이스                       | 주요 파일                                               | 설명                              |
+| ------------------------------ | ------------------------------------------------------- | --------------------------------- |
+| `features/create-trip`         | `useCreateTrip.ts`, `CreateTripModal.tsx`               | 여행 생성                         |
+| `features/join-trip`           | `useJoinTrip.ts`, `JoinTripForm.tsx`                    | 초대 코드로 참여                  |
+| `features/recover-membership`  | `useRecoverMembership.ts`, `RecoverMembershipModal.tsx` | 복구 코드 재발급                  |
+| `features/propose-destination` | `useProposeDestination.ts`                              | 여행지 제안                       |
+| `features/vote-destination`    | `useVoteDestination.ts`                                 | 여행지 투표 + 자동 확정           |
+| `features/confirm-destination` | `useConfirmDestination.ts`                              | 호스트 수동 확정                  |
+| `features/create-post`         | `useCreatePost.ts`, `CreatePostForm.tsx`                | 게시글 작성 (이미지 포함)         |
+| `features/create-comment`      | `useCreateComment.ts`, `CreateCommentForm.tsx`          | 댓글 작성 (중첩 지원)             |
 | `features/delete-post`         | `useDeletePost.ts`                                      | 게시글 삭제 (Storage 이미지 포함) |
-| `features/delete-comment`      | `useDeleteComment.ts`                                   | 댓글 삭제                       |
-| `features/edit-post`           | `useEditPost.ts`, `EditPostForm.tsx`                    | 게시글 수정 (이미지 교체/삭제)  |
-| `features/edit-comment`        | `useEditComment.ts`                                     | 댓글 수정                       |
+| `features/delete-comment`      | `useDeleteComment.ts`                                   | 댓글 삭제                         |
+| `features/edit-post`           | `useEditPost.ts`, `EditPostForm.tsx`                    | 게시글 수정 (이미지 교체/삭제)    |
+| `features/edit-comment`        | `useEditComment.ts`                                     | 댓글 수정                         |
 
 ### Widgets
 
@@ -268,14 +268,14 @@ comments
 
 ### Shared
 
-| 모듈                        | 설명                                 |
-| --------------------------- | ------------------------------------ |
-| `shared/api/supabase.ts`           | Supabase 클라이언트 싱글톤                       |
-| `shared/lib/deviceId.ts`           | device_id get-or-create                          |
-| `shared/lib/memberToken.ts`        | member_token localStorage read/write             |
-| `shared/lib/crypto.ts`             | SHA-256 해싱, 토큰/코드 생성                     |
-| `shared/lib/uploadImage.ts`        | Supabase Storage 이미지 업로드                   |
-| `shared/store/memberSession.ts`    | 인증된 멤버 id/role 전역 Zustand 스토어          |
+| 모듈                            | 설명                                    |
+| ------------------------------- | --------------------------------------- |
+| `shared/api/supabase.ts`        | Supabase 클라이언트 싱글톤              |
+| `shared/lib/deviceId.ts`        | device_id get-or-create                 |
+| `shared/lib/memberToken.ts`     | member_token localStorage read/write    |
+| `shared/lib/crypto.ts`          | SHA-256 해싱, 토큰/코드 생성            |
+| `shared/lib/uploadImage.ts`     | Supabase Storage 이미지 업로드          |
+| `shared/store/memberSession.ts` | 인증된 멤버 id/role 전역 Zustand 스토어 |
 
 ---
 
