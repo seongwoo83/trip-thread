@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, Textarea } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { useCreateComment } from "../model/useCreateComment";
 
 type Props = {
@@ -16,11 +17,12 @@ export const CreateCommentForm = ({
 	authorId,
 	parentId = null,
 	depth = 0,
-	placeholder = "댓글을 입력하세요...",
+	placeholder,
 	onSuccess,
 }: Props) => {
 	const [content, setContent] = useState("");
 	const createComment = useCreateComment();
+	const { t } = useTranslation();
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -40,7 +42,7 @@ export const CreateCommentForm = ({
 		<form onSubmit={handleSubmit}>
 			<div className="flex gap-2">
 				<Textarea
-					placeholder={placeholder}
+					placeholder={placeholder ?? t("createComment.placeholder")}
 					value={content}
 					onChange={(e) => setContent(e.target.value)}
 					minRows={1}
@@ -56,7 +58,7 @@ export const CreateCommentForm = ({
 					disabled={!content.trim()}
 					style={{ alignSelf: "flex-end" }}
 				>
-					등록
+					{t("createComment.submit")}
 				</Button>
 			</div>
 		</form>
