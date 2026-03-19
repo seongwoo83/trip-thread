@@ -1,6 +1,6 @@
 import { NavLink as RNavLink, useLocation } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
-import { Burger, Button, Container, Drawer, Group, Stack } from "@mantine/core";
+import { Burger, Container, Drawer, Group } from "@mantine/core";
 
 const NAV_LINKS = [{ label: "Home", href: "/" }];
 
@@ -60,7 +60,7 @@ export const Header = () => {
 
 					{/* Right actions */}
 					<Group className="ml-auto">
-						<Button
+						{/* <Button
 							visibleFrom="sm"
 							variant="outline"
 							size="sm"
@@ -72,7 +72,7 @@ export const Header = () => {
 							}}
 						>
 							Login
-						</Button>
+						</Button> */}
 						<Burger
 							opened={opened}
 							onClick={toggle}
@@ -102,7 +102,7 @@ export const Header = () => {
 				}
 				size="xs"
 			>
-				<Stack>
+				{/* <Stack>
 					{NAV_LINKS.map(({ label, href }) => (
 						<Button
 							key={href}
@@ -119,7 +119,7 @@ export const Header = () => {
 					<Button mt="sm" radius="xl">
 						Login
 					</Button>
-				</Stack>
+				</Stack> */}
 			</Drawer>
 		</div>
 	);
