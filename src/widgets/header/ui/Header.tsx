@@ -1,12 +1,18 @@
 import { NavLink as RNavLink, useLocation } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
-import { Burger, Container, Drawer, Group } from "@mantine/core";
+import { Burger, Button, Container, Drawer, Group } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 
-const NAV_LINKS = [{ label: "Home", href: "/" }];
+const NAV_LINKS = [{ labelKey: "Home", href: "/" }];
 
 export const Header = () => {
 	const [opened, { toggle, close }] = useDisclosure(false);
 	const { pathname } = useLocation();
+	const { i18n } = useTranslation();
+
+	const toggleLanguage = () => {
+		i18n.changeLanguage(i18n.language === "ko" ? "en" : "ko");
+	};
 
 	return (
 		<div className="w-full h-full bg-white/70 backdrop-blur-md border-b border-gray-200/60">
@@ -31,7 +37,7 @@ export const Header = () => {
 
 					{/* Desktop nav */}
 					<Group gap="xl" visibleFrom="sm" className="ml-6">
-						{NAV_LINKS.map(({ label, href }) => {
+						{NAV_LINKS.map(({ labelKey, href }) => {
 							const isActive = pathname === href;
 							return (
 								<div key={href} className="relative flex items-center pb-0.5">
@@ -45,7 +51,7 @@ export const Header = () => {
 											transition: "color 0.15s",
 										}}
 									>
-										{label}
+										{labelKey}
 									</RNavLink>
 									{isActive && (
 										<span
@@ -60,19 +66,15 @@ export const Header = () => {
 
 					{/* Right actions */}
 					<Group className="ml-auto">
-						{/* <Button
-							visibleFrom="sm"
-							variant="outline"
-							size="sm"
-							radius="xl"
-							style={{
-								borderColor: "#d1d5db",
-								color: "#374151",
-								fontWeight: 500,
-							}}
+						<Button
+							variant="subtle"
+							size="xs"
+							color="gray"
+							onClick={toggleLanguage}
+							style={{ fontFamily: "monospace", minWidth: 36 }}
 						>
-							Login
-						</Button> */}
+							{i18n.language === "ko" ? "EN" : "한"}
+						</Button>
 						<Burger
 							opened={opened}
 							onClick={toggle}
@@ -101,26 +103,7 @@ export const Header = () => {
 					</span>
 				}
 				size="xs"
-			>
-				{/* <Stack>
-					{NAV_LINKS.map(({ label, href }) => (
-						<Button
-							key={href}
-							variant={pathname === href ? "light" : "subtle"}
-							component={RNavLink}
-							to={href}
-							onClick={close}
-							justify="flex-start"
-							size="md"
-						>
-							{label}
-						</Button>
-					))}
-					<Button mt="sm" radius="xl">
-						Login
-					</Button>
-				</Stack> */}
-			</Drawer>
+			></Drawer>
 		</div>
 	);
 };
