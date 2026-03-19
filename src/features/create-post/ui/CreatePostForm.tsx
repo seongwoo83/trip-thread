@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { Button, Textarea } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { useCreatePost } from "../model/useCreatePost";
 import { uploadTripPhoto } from "@/shared/lib";
 
@@ -14,6 +15,7 @@ export const CreatePostForm = ({ tripId, authorId }: Props) => {
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const createPost = useCreatePost();
+	const { t } = useTranslation();
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -50,7 +52,7 @@ export const CreatePostForm = ({ tripId, authorId }: Props) => {
 		<form onSubmit={handleSubmit}>
 			<div className="rounded-2xl border border-gray-200 bg-white p-4">
 				<Textarea
-					placeholder="여행에서 있었던 일을 공유해보세요..."
+					placeholder={t("createPost.placeholder")}
 					value={content}
 					onChange={(e) => setContent(e.target.value)}
 					minRows={3}
@@ -102,7 +104,7 @@ export const CreatePostForm = ({ tripId, authorId }: Props) => {
 							<circle cx="8.5" cy="8.5" r="1.5" />
 							<polyline points="21 15 16 10 5 21" />
 						</svg>
-						사진
+						{t("createPost.photo")}
 					</button>
 
 					<input
@@ -120,7 +122,7 @@ export const CreatePostForm = ({ tripId, authorId }: Props) => {
 						loading={createPost.isPending}
 						disabled={!canSubmit}
 					>
-						올리기
+						{t("createPost.submit")}
 					</Button>
 				</div>
 			</div>
