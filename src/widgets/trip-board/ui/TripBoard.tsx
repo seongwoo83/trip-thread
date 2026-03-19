@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader, Stack, Text } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { useInfinitePosts, useRealtimePosts } from "@/entities/post";
 import { CreatePostForm } from "@/features/create-post";
 import { useDeletePost } from "@/features/delete-post";
 import { useMemberSession } from "@/shared/store";
+import i18n from "@/app/i18n";
 
 type Props = {
 	tripId: string;
@@ -13,12 +15,12 @@ type Props = {
 function formatRelativeTime(dateStr: string): string {
 	const diff = Date.now() - new Date(dateStr).getTime();
 	const mins = Math.floor(diff / 60000);
-	if (mins < 1) return "방금";
-	if (mins < 60) return `${mins}분 전`;
+	if (mins < 1) return i18n.t("board.timeAgo.justNow");
+	if (mins < 60) return i18n.t("board.timeAgo.minutes", { count: mins });
 	const hours = Math.floor(mins / 60);
-	if (hours < 24) return `${hours}시간 전`;
+	if (hours < 24) return i18n.t("board.timeAgo.hours", { count: hours });
 	const days = Math.floor(hours / 24);
-	return `${days}일 전`;
+	return i18n.t("board.timeAgo.days", { count: days });
 }
 
 function avatarLetter(nickname: string) {
@@ -28,6 +30,7 @@ function avatarLetter(nickname: string) {
 export const TripBoard = ({ tripId }: Props) => {
 	const navigate = useNavigate();
 	const { memberId, memberRole } = useMemberSession();
+	const { t } = useTranslation();
 
 	useRealtimePosts(tripId);
 	const { data, isPending, isFetchingNextPage, hasNextPage, fetchNextPage } =
@@ -102,7 +105,7 @@ export const TripBoard = ({ tripId }: Props) => {
 												});
 											}}
 										>
-											삭제
+											{t("common.delete")}
 										</button>
 									)}
 								</div>
@@ -128,8 +131,8 @@ export const TripBoard = ({ tripId }: Props) => {
 									<span>💬</span>
 									<span>
 										{post.comment_count > 0
-											? `${post.comment_count}개의 댓글`
-											: "댓글 달기"}
+											? t("board.commentCount", { count: post.comment_count })
+											: t("board.addComment")}
 									</span>
 								</div>
 							</div>
@@ -147,17 +150,17 @@ export const TripBoard = ({ tripId }: Props) => {
 
 					{!hasNextPage && posts.length > 0 && (
 						<Text size="xs" c="gray.4" ta="center" py="sm">
-							모든 스레드를 불러왔어요
+							{t("board.allLoaded")}
 						</Text>
 					)}
 				</Stack>
 			) : (
 				<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 py-16 text-center">
 					<Text size="sm" c="gray.4">
-						아직 올라온 스레드가 없어요
+						{t("board.empty")}
 					</Text>
 					<Text size="xs" c="gray.4" mt={4}>
-						첫 번째 스레드를 작성해보세요!
+						{t("board.emptyAction")}
 					</Text>
 				</div>
 			)}
