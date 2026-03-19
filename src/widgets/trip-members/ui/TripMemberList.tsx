@@ -1,4 +1,5 @@
 import { Loader, Text } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { useTripMembers } from "@/entities/trip-member";
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
 
 export const TripMemberList = ({ tripId, myMemberId }: Props) => {
 	const { data: members, isPending } = useTripMembers(tripId);
+	const { t } = useTranslation();
 
 	if (isPending) {
 		return (
@@ -26,7 +28,7 @@ export const TripMemberList = ({ tripId, myMemberId }: Props) => {
 				mb="sm"
 				style={{ letterSpacing: "0.05em" }}
 			>
-				멤버 {members?.length ?? 0}명
+				{t("members.count", { count: members?.length ?? 0 })}
 			</Text>
 			<div className="flex flex-col gap-2">
 				{members?.map((m) => (
@@ -50,7 +52,9 @@ export const TripMemberList = ({ tripId, myMemberId }: Props) => {
 								{m.nickname}
 							</span>
 							{m.id === myMemberId && (
-								<span className="text-xs text-gray-400 shrink-0">(나)</span>
+								<span className="text-xs text-gray-400 shrink-0">
+									{t("members.me")}
+								</span>
 							)}
 							{m.role === "host" && (
 								<span
@@ -62,7 +66,7 @@ export const TripMemberList = ({ tripId, myMemberId }: Props) => {
 										fontWeight: 600,
 									}}
 								>
-									호스트
+									{t("members.host")}
 								</span>
 							)}
 						</div>

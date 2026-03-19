@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, Progress, Stack, Text, TextInput } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { useDestinationProposals } from "@/entities/destination-proposal";
 import { useProposeDestination } from "@/features/propose-destination";
 import { useVoteDestination } from "@/features/vote-destination";
@@ -14,6 +15,7 @@ type Props = {
 export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 	const [proposeInput, setProposeInput] = useState("");
 	const [showProposeForm, setShowProposeForm] = useState(false);
+	const { t } = useTranslation();
 
 	const { proposals, totalVotes, myVotedProposalId } = useDestinationProposals(
 		tripId,
@@ -48,10 +50,10 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 					className="text-xl font-bold text-gray-900"
 					style={{ fontFamily: "Paperozi" }}
 				>
-					어디로 떠날까요?
+					{t("destinationVote.title")}
 				</h2>
 				<Text size="sm" c="gray.5" mt={4}>
-					여행지를 제안하고 투표해보세요. 과반수가 선택한 곳으로 확정돼요.
+					{t("destinationVote.subtitle")}
 				</Text>
 			</div>
 
@@ -59,10 +61,10 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 			{proposals.length === 0 ? (
 				<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 py-12 text-center">
 					<Text size="sm" c="gray.4">
-						아직 제안된 여행지가 없어요
+						{t("destinationVote.noProposals")}
 					</Text>
 					<Text size="xs" c="gray.4" mt={4}>
-						첫 번째로 여행지를 제안해보세요!
+						{t("destinationVote.proposeFirst")}
 					</Text>
 				</div>
 			) : (
@@ -85,7 +87,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 									<div className="flex items-center gap-2">
 										{isMyVote && (
 											<span className="text-xs font-medium text-indigo-500">
-												✓ 내 투표
+												{t("destinationVote.myVote")}
 											</span>
 										)}
 										<Text fw={600} size="sm">
@@ -94,7 +96,8 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 									</div>
 									<div className="flex items-center gap-2">
 										<Text size="xs" c="gray.5">
-											{p.voteCount}표
+											{p.voteCount}
+											{t("destinationVote.votes")}
 											{totalVotes > 0 && ` (${Math.round(pct)}%)`}
 										</Text>
 										{canVote && (
@@ -107,7 +110,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 												}
 												onClick={() => handleVote(p.id)}
 											>
-												투표
+												{t("destinationVote.vote")}
 											</Button>
 										)}
 									</div>
@@ -127,7 +130,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 			{/* 투표 현황 요약 */}
 			{totalVotes > 0 && (
 				<Text size="xs" c="gray.4" ta="center">
-					총 {totalVotes}명 투표 완료
+					{t("destinationVote.totalVotes", { count: totalVotes })}
 				</Text>
 			)}
 
@@ -136,7 +139,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 				<form onSubmit={handlePropose}>
 					<Stack gap="xs">
 						<TextInput
-							placeholder="예: 일본 오사카, 베트남 다낭..."
+							placeholder={t("destinationVote.proposePlaceholder")}
 							value={proposeInput}
 							onChange={(e) => setProposeInput(e.target.value)}
 							autoFocus
@@ -149,7 +152,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 								disabled={!proposeInput.trim()}
 								flex={1}
 							>
-								제안하기
+								{t("destinationVote.proposeSubmit")}
 							</Button>
 							<Button
 								size="sm"
@@ -160,7 +163,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 									setProposeInput("");
 								}}
 							>
-								취소
+								{t("common.cancel")}
 							</Button>
 						</div>
 					</Stack>
@@ -171,7 +174,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 					radius="xl"
 					onClick={() => setShowProposeForm(true)}
 				>
-					+ 여행지 제안하기
+					{t("destinationVote.propose")}
 				</Button>
 			)}
 
@@ -179,7 +182,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 			{role === "host" && proposals.length > 0 && (
 				<div className="border-t border-gray-100 pt-4">
 					<Text size="xs" c="gray.4" mb="xs" ta="center">
-						충분히 투표가 이뤄졌다면 투표를 마감할 수 있어요.
+						{t("destinationVote.hostConfirmHint")}
 					</Text>
 					<Button
 						fullWidth
@@ -190,7 +193,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 						loading={confirm.isPending}
 						onClick={handleConfirm}
 					>
-						투표 마감 (최다 득표 여행지로 확정)
+						{t("destinationVote.hostConfirm")}
 					</Button>
 				</div>
 			)}

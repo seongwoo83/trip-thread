@@ -1,0 +1,134 @@
+{
+	"common": {
+		"copy": "Copy",
+		"copied": "Copied ✓",
+		"close": "Close",
+		"cancel": "Cancel",
+		"save": "Save",
+		"edit": "Edit",
+		"delete": "Delete",
+		"confirm": "Confirm",
+		"loading": "Loading...",
+		"goHome": "Back to Home"
+	},
+	"header": {
+		"title": "trip-thread"
+	},
+	"home": {
+		"hero": {
+			"title": "Record your trip together",
+			"subtitle": "Create a trip thread and share moments with friends"
+		},
+		"newTrip": "+ New Trip",
+		"joinSection": "Join a trip with invite code",
+		"deviceChanged": "Changed devices?",
+		"recoverAccess": "Recover access with recovery code",
+		"myTrips": "My Trips",
+		"destinationVoting": "Voting on destination",
+		"noTrips": "No trips yet",
+		"createFirstTrip": "Create your first trip!"
+	},
+	"trip": {
+		"notFound": {
+			"title": "Trip not found",
+			"description": "The link may be incorrect or the trip may have been deleted."
+		},
+		"unauthorized": {
+			"title": "You're not a member of this trip",
+			"description": "Join with an invite code or recover access with your recovery code."
+		},
+		"viewMembers": "View Members",
+		"shareInvite": "Share Invite",
+		"memberListTitle": "Members"
+	},
+	"members": {
+		"count": "{{count}} members",
+		"host": "Host",
+		"me": "(me)"
+	},
+	"destinationVote": {
+		"title": "Where are we going?",
+		"subtitle": "Suggest destinations and vote. The majority choice will be confirmed.",
+		"noProposals": "No destinations proposed yet",
+		"proposeFirst": "Be the first to suggest a destination!",
+		"myVote": "✓ My Vote",
+		"votes": "votes",
+		"vote": "Vote",
+		"totalVotes": "{{count}} votes cast",
+		"propose": "+ Suggest Destination",
+		"hostConfirmHint": "If enough votes are in, you can close the vote.",
+		"hostConfirm": "Close Voting (confirm top destination)",
+		"proposePlaceholder": "Enter destination name",
+		"proposeSubmit": "Suggest"
+	},
+	"board": {
+		"timeAgo": {
+			"justNow": "just now",
+			"minutes": "{{count}}m ago",
+			"hours": "{{count}}h ago",
+			"days": "{{count}}d ago"
+		},
+		"commentCount": "{{count}} comments",
+		"addComment": "Add comment",
+		"allLoaded": "All threads loaded",
+		"empty": "No threads yet",
+		"emptyAction": "Write the first thread!"
+	},
+	"postThread": {
+		"notFound": "Thread not found",
+		"backToFeed": "← Back to feed",
+		"reply": "Reply",
+		"replyPlaceholder": "Write a reply...",
+		"commentsTitle": "Comments",
+		"noComments": "No comments yet. Be the first!",
+		"commentPlaceholder": "Leave a comment..."
+	},
+	"createTrip": {
+		"title": "Create New Trip",
+		"success": {
+			"title": "Trip created!",
+			"subtitle": "Share the invite code to invite friends.",
+			"recoveryTitle": "Save your recovery code",
+			"recoveryDescription": "If you change devices or clear your data, you can use this code to regain access. Only shown once.",
+			"goToTrip": "Go to Trip"
+		},
+		"form": {
+			"tripName": "Trip Name",
+			"tripNamePlaceholder": "Summer Trip to Osaka",
+			"period": "Trip Period",
+			"periodPlaceholder": "Select dates",
+			"nickname": "Your Nickname",
+			"nicknamePlaceholder": "Name to use in the trip",
+			"submit": "Create Trip"
+		}
+	},
+	"joinTrip": {
+		"inviteCodePlaceholder": "Enter invite code (e.g. ABC123)",
+		"nicknamePlaceholder": "Nickname for the trip",
+		"submit": "Join",
+		"goToTrip": "Go to Trip",
+		"recoveryTitle": "Save your recovery code",
+		"recoveryExplanation": "If you change devices or clear your data, you can use this code to recover access."
+	},
+	"recover": {
+		"title": "Recover Access",
+		"successTitle": "Access to {{tripName}} has been restored.",
+		"newRecoveryTitle": "Save your new recovery code",
+		"oldCodeInvalid": "Your old recovery code is no longer valid.",
+		"inviteCodeLabel": "Invite Code",
+		"inviteCodePlaceholder": "ABC123",
+		"recoveryCodeLabel": "Recovery Code",
+		"recoveryCodePlaceholder": "XXXX-XXXX-XXXX",
+		"submit": "Recover",
+		"goToTrip": "Go to Trip"
+	},
+	"createPost": {
+		"placeholder": "Share something from your trip...",
+		"photo": "Photo",
+		"submit": "Post"
+	},
+	"createComment": {
+		"placeholder": "Write a comment...",
+		"submit": "Post"
+	}
+}

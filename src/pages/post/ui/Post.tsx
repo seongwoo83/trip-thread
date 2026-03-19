@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Loader, Stack, Text } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { useTripAccess } from "@/entities/trip";
 import { PostThread } from "@/widgets/post-thread";
 
@@ -7,6 +8,7 @@ export const PostPage = () => {
 	const { id, postId } = useParams<{ id: string; postId: string }>();
 	const navigate = useNavigate();
 	const { status, trip } = useTripAccess(id);
+	const { t } = useTranslation();
 
 	if (status === "loading") {
 		return (
@@ -20,7 +22,7 @@ export const PostPage = () => {
 		return (
 			<Stack align="center" gap="sm" pt={60}>
 				<Text size="lg" fw={600} c="gray.7">
-					여행을 찾을 수 없어요
+					{t("trip.notFound.title")}
 				</Text>
 				<Button
 					variant="subtle"
@@ -28,7 +30,7 @@ export const PostPage = () => {
 					mt="xs"
 					onClick={() => navigate("/")}
 				>
-					홈으로 돌아가기
+					{t("common.goHome")}
 				</Button>
 			</Stack>
 		);
@@ -38,7 +40,7 @@ export const PostPage = () => {
 		return (
 			<Stack align="center" gap="sm" pt={60}>
 				<Text size="lg" fw={600} c="gray.7">
-					이 여행의 멤버가 아니에요
+					{t("trip.unauthorized.title")}
 				</Text>
 				<Button
 					variant="subtle"
@@ -46,7 +48,7 @@ export const PostPage = () => {
 					mt="xs"
 					onClick={() => navigate("/")}
 				>
-					홈으로 돌아가기
+					{t("common.goHome")}
 				</Button>
 			</Stack>
 		);
