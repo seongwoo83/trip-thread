@@ -10,6 +10,7 @@ import {
 	Text,
 	TextInput,
 } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { useRecoverMembership } from "@/features/recover-membership/model/useRecoverMembership";
 import { formatRecoveryCode } from "@/shared/lib";
 import type { RecoverResult } from "@/features/recover-membership/model/useRecoverMembership";
@@ -26,6 +27,7 @@ export const RecoverMembershipModal = ({ opened, onClose }: Props) => {
 	const [form, setForm] = useState(EMPTY_FORM);
 	const [result, setResult] = useState<RecoverResult | null>(null);
 	const { mutateAsync, isPending, error, reset } = useRecoverMembership();
+	const { t } = useTranslation();
 
 	const handleClose = () => {
 		setForm(EMPTY_FORM);
@@ -44,15 +46,20 @@ export const RecoverMembershipModal = ({ opened, onClose }: Props) => {
 	};
 
 	return (
-		<Modal opened={opened} onClose={handleClose} title="접근권 복구" centered>
+		<Modal
+			opened={opened}
+			onClose={handleClose}
+			title={t("recover.title")}
+			centered
+		>
 			{result ? (
 				<Stack gap="md">
 					<Text size="sm" c="gray.7">
-						<strong>{result.trip.name}</strong> 여행의 접근권이 복구됐어요.
+						{t("recover.successTitle", { tripName: result.trip.name })}
 					</Text>
-					<Alert color="yellow" title="새 복구 코드를 저장해두세요">
+					<Alert color="yellow" title={t("recover.newRecoveryTitle")}>
 						<Text size="sm" mb="xs">
-							기존 복구 코드는 더 이상 사용할 수 없어요.
+							{t("recover.oldCodeInvalid")}
 						</Text>
 						<Group gap="xs" align="center">
 							<Text fw={700} ff="monospace" size="lg">
@@ -66,7 +73,7 @@ export const RecoverMembershipModal = ({ opened, onClose }: Props) => {
 										color={copied ? "teal" : "yellow"}
 										onClick={copy}
 									>
-										{copied ? "복사됨" : "복사"}
+										{copied ? t("common.copied") : t("common.copy")}
 									</Button>
 								)}
 							</CopyButton>
@@ -79,15 +86,15 @@ export const RecoverMembershipModal = ({ opened, onClose }: Props) => {
 							navigate(`/trip/${result.trip.id}`);
 						}}
 					>
-						여행으로 이동
+						{t("recover.goToTrip")}
 					</Button>
 				</Stack>
 			) : (
 				<form onSubmit={handleSubmit}>
 					<Stack gap="md">
 						<TextInput
-							label="초대 코드"
-							placeholder="ABC123"
+							label={t("recover.inviteCodeLabel")}
+							placeholder={t("recover.inviteCodePlaceholder")}
 							value={form.inviteCode}
 							onChange={(e) => {
 								reset();
@@ -106,8 +113,8 @@ export const RecoverMembershipModal = ({ opened, onClose }: Props) => {
 							}}
 						/>
 						<TextInput
-							label="복구 코드"
-							placeholder="XXXX-XXXX-XXXX"
+							label={t("recover.recoveryCodeLabel")}
+							placeholder={t("recover.recoveryCodePlaceholder")}
 							value={form.recoveryCode}
 							onChange={(e) =>
 								setForm((f) => ({
@@ -130,7 +137,7 @@ export const RecoverMembershipModal = ({ opened, onClose }: Props) => {
 							disabled={!form.inviteCode.trim() || !form.recoveryCode.trim()}
 							fullWidth
 						>
-							복구하기
+							{t("recover.submit")}
 						</Button>
 					</Stack>
 				</form>

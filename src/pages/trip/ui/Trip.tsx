@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Loader, Modal, Stack, Text } from "@mantine/core";
 import { useClipboard, useDisclosure } from "@mantine/hooks";
+import { useTranslation } from "react-i18next";
 import { useTripAccess } from "@/entities/trip";
 import { DestinationVoteWidget } from "@/widgets/destination-vote";
 import { TripBoard } from "@/widgets/trip-board";
@@ -15,6 +16,7 @@ export const TripPage = () => {
 		memberModalOpened,
 		{ open: openMemberModal, close: closeMemberModal },
 	] = useDisclosure(false);
+	const { t } = useTranslation();
 
 	if (status === "loading") {
 		return (
@@ -28,10 +30,10 @@ export const TripPage = () => {
 		return (
 			<Stack align="center" gap="sm" pt={60}>
 				<Text size="lg" fw={600} c="gray.7">
-					여행을 찾을 수 없어요
+					{t("trip.notFound.title")}
 				</Text>
 				<Text size="sm" c="gray.5">
-					링크가 잘못됐거나 삭제된 여행일 수 있어요.
+					{t("trip.notFound.description")}
 				</Text>
 				<Button
 					variant="subtle"
@@ -39,7 +41,7 @@ export const TripPage = () => {
 					mt="xs"
 					onClick={() => navigate("/")}
 				>
-					홈으로 돌아가기
+					{t("common.goHome")}
 				</Button>
 			</Stack>
 		);
@@ -49,10 +51,10 @@ export const TripPage = () => {
 		return (
 			<Stack align="center" gap="sm" pt={60}>
 				<Text size="lg" fw={600} c="gray.7">
-					이 여행의 멤버가 아니에요
+					{t("trip.unauthorized.title")}
 				</Text>
 				<Text size="sm" c="gray.5" ta="center">
-					초대 코드로 참여하거나, 복구 코드로 접근권을 복구해보세요.
+					{t("trip.unauthorized.description")}
 				</Text>
 				<Button
 					variant="subtle"
@@ -60,7 +62,7 @@ export const TripPage = () => {
 					mt="xs"
 					onClick={() => navigate("/")}
 				>
-					홈으로 돌아가기
+					{t("common.goHome")}
 				</Button>
 			</Stack>
 		);
@@ -103,7 +105,7 @@ export const TripPage = () => {
 								hiddenFrom="sm"
 								onClick={openMemberModal}
 							>
-								멤버 보기
+								{t("trip.viewMembers")}
 							</Button>
 							<Button
 								variant="subtle"
@@ -111,7 +113,7 @@ export const TripPage = () => {
 								color={clipboard.copied ? "teal" : "gray"}
 								onClick={handleShare}
 							>
-								{clipboard.copied ? "복사됨 ✓" : "초대 공유"}
+								{clipboard.copied ? t("common.copied") : t("trip.shareInvite")}
 							</Button>
 						</div>
 					</div>
@@ -155,7 +157,7 @@ export const TripPage = () => {
 				onClose={closeMemberModal}
 				title={
 					<Text fw={600} size="sm">
-						멤버 목록
+						{t("trip.memberListTitle")}
 					</Text>
 				}
 				size="xs"

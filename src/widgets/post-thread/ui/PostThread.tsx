@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Loader, Stack, Text, Textarea } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { usePost, useRealtimePosts } from "@/entities/post";
 import {
 	useComments,
@@ -13,6 +14,7 @@ import { useDeleteComment } from "@/features/delete-comment";
 import { EditPostForm } from "@/features/edit-post";
 import { useEditComment } from "@/features/edit-comment";
 import { useMemberSession } from "@/shared/store";
+import i18n from "@/app/i18n";
 
 type Props = {
 	postId: string;
@@ -22,12 +24,12 @@ type Props = {
 function formatRelativeTime(dateStr: string): string {
 	const diff = Date.now() - new Date(dateStr).getTime();
 	const mins = Math.floor(diff / 60000);
-	if (mins < 1) return "방금";
-	if (mins < 60) return `${mins}분 전`;
+	if (mins < 1) return i18n.t("board.timeAgo.justNow");
+	if (mins < 60) return i18n.t("board.timeAgo.minutes", { count: mins });
 	const hours = Math.floor(mins / 60);
-	if (hours < 24) return `${hours}시간 전`;
+	if (hours < 24) return i18n.t("board.timeAgo.hours", { count: hours });
 	const days = Math.floor(hours / 24);
-	return `${days}일 전`;
+	return i18n.t("board.timeAgo.days", { count: days });
 }
 
 function avatarLetter(nickname: string) {
@@ -57,6 +59,7 @@ const CommentNode = ({
 	const canEdit = comment.author.id === memberId;
 	const deleteComment = useDeleteComment();
 	const editComment = useEditComment();
+	const { t } = useTranslation();
 
 	const handleEditSubmit = async (e: { preventDefault(): void }) => {
 		e.preventDefault();
@@ -100,7 +103,7 @@ const CommentNode = ({
 								setEditing(true);
 							}}
 						>
-							수정
+							{t("common.edit")}
 						</button>
 					)}
 					{canDelete && (
@@ -112,7 +115,7 @@ const CommentNode = ({
 								deleteComment.mutate({ commentId: comment.id, postId, tripId })
 							}
 						>
-							삭제
+							{t("common.delete")}
 						</button>
 					)}
 				</div>
@@ -136,7 +139,7 @@ const CommentNode = ({
 								color="gray"
 								onClick={() => setEditing(false)}
 							>
-								취소
+								{t("common.cancel")}
 							</Button>
 							<Button
 								type="submit"
@@ -145,7 +148,7 @@ const CommentNode = ({
 								loading={editComment.isPending}
 								disabled={!editContent.trim()}
 							>
-								저장
+								{t("common.save")}
 							</Button>
 						</div>
 					</form>
@@ -162,7 +165,7 @@ const CommentNode = ({
 						className="mt-1.5 text-xs text-gray-400 hover:text-indigo-500"
 						onClick={() => setReplying((v) => !v)}
 					>
-						{replying ? "취소" : "답글"}
+						{replying ? t("common.cancel") : t("postThread.reply")}
 					</button>
 				)}
 
@@ -174,7 +177,7 @@ const CommentNode = ({
 							authorId={memberId}
 							parentId={comment.id}
 							depth={comment.depth + 1}
-							placeholder="답글을 입력하세요..."
+							placeholder={t("postThread.replyPlaceholder")}
 							onSuccess={() => setReplying(false)}
 						/>
 					</div>
@@ -203,6 +206,7 @@ const CommentNode = ({
 export const PostThread = ({ postId, tripId }: Props) => {
 	const navigate = useNavigate();
 	const { memberId, memberRole } = useMemberSession();
+	const { t } = useTranslation();
 	useRealtimePosts(tripId);
 	useRealtimeComments(postId, tripId);
 	const { data: post, isPending: postLoading } = usePost(postId);
@@ -224,14 +228,14 @@ export const PostThread = ({ postId, tripId }: Props) => {
 		return (
 			<Stack align="center" gap="sm" pt={60}>
 				<Text size="lg" fw={600} c="gray.7">
-					스레드를 찾을 수 없어요
+					{t("postThread.notFound")}
 				</Text>
 				<button
 					type="button"
 					className="text-sm text-indigo-500 hover:underline"
 					onClick={() => navigate(`/trip/${tripId}`)}
 				>
-					← 피드로 돌아가기
+					{t("postThread.backToFeed")}
 				</button>
 			</Stack>
 		);
@@ -248,7 +252,7 @@ export const PostThread = ({ postId, tripId }: Props) => {
 				className="flex items-center gap-1 text-sm text-gray-500 hover:text-indigo-500"
 				onClick={() => navigate(`/trip/${tripId}`)}
 			>
-				← 피드로 돌아가기
+				{t("postThread.backToFeed")}
 			</button>
 
 			{/* 원본 포스트 */}
@@ -272,7 +276,7 @@ export const PostThread = ({ postId, tripId }: Props) => {
 								className="text-xs text-gray-400 hover:text-indigo-500"
 								onClick={() => setEditingPost(true)}
 							>
-								수정
+								{t("common.edit")}
 							</button>
 						)}
 						{canDeletePost && (
@@ -287,7 +291,7 @@ export const PostThread = ({ postId, tripId }: Props) => {
 									)
 								}
 							>
-								삭제
+								{t("common.delete")}
 							</button>
 						)}
 					</div>
@@ -323,13 +327,13 @@ export const PostThread = ({ postId, tripId }: Props) => {
 			{/* 댓글 섹션 */}
 			<Stack gap="sm">
 				<Text size="sm" fw={600} c="gray.7">
-					댓글
+					{t("postThread.commentsTitle")}
 				</Text>
 
 				<CreateCommentForm
 					postId={postId}
 					authorId={memberId}
-					placeholder="댓글을 남겨보세요..."
+					placeholder={t("postThread.commentPlaceholder")}
 				/>
 
 				{commentsLoading ? (
@@ -351,7 +355,7 @@ export const PostThread = ({ postId, tripId }: Props) => {
 					</Stack>
 				) : (
 					<Text size="sm" c="gray.4" ta="center" py="md">
-						아직 댓글이 없어요. 첫 댓글을 남겨보세요!
+						{t("postThread.noComments")}
 					</Text>
 				)}
 			</Stack>

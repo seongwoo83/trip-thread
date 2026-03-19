@@ -9,6 +9,7 @@ import {
 	Text,
 	TextInput,
 } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { useJoinTrip } from "@/features/join-trip/model/useJoinTrip";
 import { formatRecoveryCode } from "@/shared/lib";
 import type { JoinTripResult } from "@/features/join-trip/model/useJoinTrip";
@@ -19,6 +20,7 @@ export const JoinTripForm = () => {
 	const [nickname, setNickname] = useState("");
 	const [result, setResult] = useState<JoinTripResult | null>(null);
 	const { mutateAsync, isPending, error, reset } = useJoinTrip();
+	const { t } = useTranslation();
 
 	const handleSubmit = async (e: SyntheticEvent) => {
 		e.preventDefault();
@@ -32,10 +34,9 @@ export const JoinTripForm = () => {
 	if (result) {
 		return (
 			<Stack gap="sm">
-				<Alert color="yellow" title="복구 코드를 저장해두세요">
+				<Alert color="yellow" title={t("joinTrip.recoveryTitle")}>
 					<Text size="sm" mb="xs">
-						기기를 바꾸거나 데이터가 초기화되면 이 코드로 여행 접근권을 복구할
-						수 있어요.
+						{t("joinTrip.recoveryExplanation")}
 					</Text>
 					<Group gap="xs" align="center">
 						<Text fw={700} ff="monospace" size="lg">
@@ -49,14 +50,14 @@ export const JoinTripForm = () => {
 									color={copied ? "teal" : "yellow"}
 									onClick={copy}
 								>
-									{copied ? "복사됨" : "복사"}
+									{copied ? t("common.copied") : t("common.copy")}
 								</Button>
 							)}
 						</CopyButton>
 					</Group>
 				</Alert>
 				<Button fullWidth onClick={() => navigate(`/trip/${result.trip.id}`)}>
-					여행으로 이동
+					{t("joinTrip.goToTrip")}
 				</Button>
 			</Stack>
 		);
@@ -66,7 +67,7 @@ export const JoinTripForm = () => {
 		<form onSubmit={handleSubmit}>
 			<Stack gap="sm">
 				<TextInput
-					placeholder="초대 코드 입력 (예: ABC123)"
+					placeholder={t("joinTrip.inviteCodePlaceholder")}
 					value={code}
 					onChange={(e) => {
 						reset();
@@ -84,7 +85,7 @@ export const JoinTripForm = () => {
 				{code.length === 6 && (
 					<Group gap="sm" align="flex-start">
 						<TextInput
-							placeholder="여행에서 불릴 닉네임"
+							placeholder={t("joinTrip.nicknamePlaceholder")}
 							value={nickname}
 							onChange={(e) => setNickname(e.target.value)}
 							error={error?.message}
@@ -95,7 +96,7 @@ export const JoinTripForm = () => {
 							loading={isPending}
 							disabled={!nickname.trim()}
 						>
-							참여하기
+							{t("joinTrip.submit")}
 						</Button>
 					</Group>
 				)}
