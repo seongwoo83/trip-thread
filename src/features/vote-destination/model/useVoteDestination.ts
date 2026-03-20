@@ -20,16 +20,25 @@ export function useVoteDestination() {
 			if (error) throw new Error(error.message);
 
 			// 투표 후 과반수 체크 → 자동 확정
-			const { data: votes } = await supabase
-				.from("destination_votes")
-				.select("proposal_id")
-				.eq("trip_id", tripId);
+			const [{ data: votes }, { count: memberCount }] = await Promise.all([
+				supabase
+					.from("destination_votes")
+					.select("proposal_id")
+					.eq("trip_id", tripId),
+				supabase
+					.from("trip_members")
+					.select("*", { count: "exact", head: true })
+					.eq("trip_id", tripId),
+			]);
 
-			const totalVotes = votes?.length ?? 0;
 			const votesForProposal =
 				votes?.filter((v) => v.proposal_id === proposalId).length ?? 0;
 
-			if (totalVotes > 0 && votesForProposal > totalVotes / 2) {
+			if (
+				memberCount &&
+				memberCount > 0 &&
+				votesForProposal > memberCount / 2
+			) {
 				const { data: winning } = await supabase
 					.from("destination_proposals")
 					.select("name")
