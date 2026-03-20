@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/shared/api";
 import type {
 	DestinationProposal,
@@ -16,6 +17,48 @@ export function useDestinationProposals(
 	tripId: string,
 	memberId: string,
 ): Result {
+	const qc = useQueryClient();
+
+	useEffect(() => {
+		if (!tripId) return;
+
+		const channel = supabase
+			.channel(`destination-proposals:${tripId}`)
+			.on(
+				"postgres_changes",
+				{
+					event: "*",
+					schema: "public",
+					table: "destination_proposals",
+					filter: `trip_id=eq.${tripId}`,
+				},
+				() => {
+					qc.invalidateQueries({
+						queryKey: ["destination-proposals", tripId],
+					});
+				},
+			)
+			.on(
+				"postgres_changes",
+				{
+					event: "*",
+					schema: "public",
+					table: "destination_votes",
+					filter: `trip_id=eq.${tripId}`,
+				},
+				() => {
+					qc.invalidateQueries({
+						queryKey: ["destination-proposals", tripId],
+					});
+				},
+			)
+			.subscribe();
+
+		return () => {
+			supabase.removeChannel(channel);
+		};
+	}, [tripId, qc]);
+
 	const { data } = useQuery<Result>({
 		queryKey: ["destination-proposals", tripId],
 		queryFn: async () => {
