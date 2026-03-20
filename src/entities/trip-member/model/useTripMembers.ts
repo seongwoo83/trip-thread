@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/shared/api";
 
 export type TripMemberItem = {
@@ -9,6 +10,32 @@ export type TripMemberItem = {
 };
 
 export function useTripMembers(tripId: string) {
+	const qc = useQueryClient();
+
+	useEffect(() => {
+		if (!tripId) return;
+
+		const channel = supabase
+			.channel(`trip-members:${tripId}`)
+			.on(
+				"postgres_changes",
+				{
+					event: "*",
+					schema: "public",
+					table: "trip_members",
+					filter: `trip_id=eq.${tripId}`,
+				},
+				() => {
+					qc.invalidateQueries({ queryKey: ["trip-members", tripId] });
+				},
+			)
+			.subscribe();
+
+		return () => {
+			supabase.removeChannel(channel);
+		};
+	}, [tripId, qc]);
+
 	return useQuery({
 		queryKey: ["trip-members", tripId],
 		queryFn: async () => {
