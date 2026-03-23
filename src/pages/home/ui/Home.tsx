@@ -22,18 +22,18 @@ const TripCard = ({ trip }: { trip: Trip }) => {
 	return (
 		<button
 			onClick={() => navigate(`/trip/${trip.id}`)}
-			className="group text-left rounded-2xl border border-gray-200 bg-white p-4 transition-all hover:border-indigo-300 hover:shadow-md active:scale-[0.98]"
+			className="group text-left rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 transition-all hover:border-indigo-300 hover:shadow-md active:scale-[0.98]"
 		>
 			<p
-				className="mb-1 truncate text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors"
+				className="mb-1 truncate text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-indigo-600 transition-colors"
 				style={{ fontFamily: "Paperozi" }}
 			>
 				{trip.name}
 			</p>
-			<p className="mb-3 text-xs text-gray-500">
+			<p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
 				{trip.destination ?? t("home.destinationVoting")}
 			</p>
-			<p className="text-xs text-gray-400">
+			<p className="text-xs text-gray-400 dark:text-gray-500">
 				{formatDateRange(trip.start_date, trip.end_date)}
 			</p>
 		</button>
@@ -57,12 +57,12 @@ export const HomePage = () => {
 				<div className="flex items-center justify-between">
 					<div>
 						<h1
-							className="text-2xl font-bold text-gray-900 tracking-tight"
+							className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight"
 							style={{ fontFamily: "Paperozi" }}
 						>
 							{t("home.hero.title")}
 						</h1>
-						<p className="mt-1 text-sm text-gray-500">
+						<p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
 							{t("home.hero.subtitle")}
 						</p>
 					</div>
@@ -72,7 +72,7 @@ export const HomePage = () => {
 				</div>
 
 				{/* Join section */}
-				<div className="rounded-2xl border border-gray-200 bg-gray-50/80 px-5 py-4">
+				<div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800/80 px-5 py-4">
 					<Text size="sm" fw={500} mb="sm" c="gray.7">
 						{t("home.joinSection")}
 					</Text>
@@ -108,8 +108,10 @@ export const HomePage = () => {
 							))}
 						</div>
 					) : (
-						<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 py-14 text-center">
-							<p className="text-sm text-gray-400">{t("home.noTrips")}</p>
+						<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 dark:border-gray-600 py-14 text-center">
+							<p className="text-sm text-gray-400 dark:text-gray-500">
+								{t("home.noTrips")}
+							</p>
 							<Button variant="subtle" size="xs" mt="sm" onClick={open}>
 								{t("home.createFirstTrip")}
 							</Button>
