@@ -1,6 +1,13 @@
 import { NavLink as RNavLink, useLocation } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
-import { Burger, Button, Container, Drawer, Group } from "@mantine/core";
+import {
+	Burger,
+	Button,
+	Container,
+	Drawer,
+	Group,
+	useMantineColorScheme,
+} from "@mantine/core";
 import { useTranslation } from "react-i18next";
 
 const NAV_LINKS = [{ labelKey: "Home", href: "/" }];
@@ -9,24 +16,25 @@ export const Header = () => {
 	const [opened, { toggle, close }] = useDisclosure(false);
 	const { pathname } = useLocation();
 	const { i18n } = useTranslation();
+	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
 	const toggleLanguage = () => {
 		i18n.changeLanguage(i18n.language === "ko" ? "en" : "ko");
 	};
 
 	return (
-		<div className="w-full h-full bg-white/70 backdrop-blur-md border-b border-gray-200/60">
+		<div className="w-full h-full bg-white/70 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200/60 dark:border-gray-700/60">
 			<Container size="xl" h="100%">
 				<Group h="100%" justify="flex-start">
 					{/* Logo */}
 					<RNavLink to="/" className="no-underline">
 						<span
+							className="text-gray-900 dark:text-gray-100"
 							style={{
 								fontFamily: "Paperozi",
 								fontWeight: 700,
 								fontSize: "1.125rem",
 								letterSpacing: "-0.02em",
-								color: "#111",
 							}}
 						>
 							Trip
@@ -47,7 +55,11 @@ export const Header = () => {
 										style={{
 											fontSize: "0.875rem",
 											fontWeight: isActive ? 600 : 400,
-											color: isActive ? "#111" : "#6b7280",
+											color: isActive
+												? colorScheme === "dark"
+													? "#f3f4f6"
+													: "#111"
+												: "#6b7280",
 											transition: "color 0.15s",
 										}}
 									>
@@ -66,6 +78,15 @@ export const Header = () => {
 
 					{/* Right actions */}
 					<Group className="ml-auto">
+						<Button
+							variant="subtle"
+							size="xs"
+							color="gray"
+							onClick={toggleColorScheme}
+							style={{ minWidth: 36 }}
+						>
+							{colorScheme === "dark" ? "☀️" : "🌙"}
+						</Button>
 						<Button
 							variant="subtle"
 							size="xs"

@@ -47,7 +47,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 			{/* 헤더 */}
 			<div>
 				<h2
-					className="text-xl font-bold text-gray-900"
+					className="text-xl font-bold text-gray-900 dark:text-gray-100"
 					style={{ fontFamily: "Paperozi" }}
 				>
 					{t("destinationVote.title")}
@@ -59,7 +59,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 
 			{/* 제안 목록 */}
 			{proposals.length === 0 ? (
-				<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 py-12 text-center">
+				<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 dark:border-gray-600 py-12 text-center">
 					<Text size="sm" c="gray.4">
 						{t("destinationVote.noProposals")}
 					</Text>
@@ -79,8 +79,8 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 								key={p.id}
 								className={`rounded-2xl border p-4 transition-all ${
 									isMyVote
-										? "border-indigo-300 bg-indigo-50/60"
-										: "border-gray-200 bg-white"
+										? "border-indigo-300 bg-indigo-50/60 dark:bg-indigo-900/30"
+										: "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
 								}`}
 							>
 								<div className="mb-2 flex items-center justify-between">
@@ -180,7 +180,7 @@ export const DestinationVoteWidget = ({ tripId, memberId, role }: Props) => {
 
 			{/* 호스트 전용: 투표 마감 */}
 			{role === "host" && proposals.length > 0 && (
-				<div className="border-t border-gray-100 pt-4">
+				<div className="border-t border-gray-100 dark:border-gray-700 pt-4">
 					<Text size="xs" c="gray.4" mb="xs" ta="center">
 						{t("destinationVote.hostConfirmHint")}
 					</Text>
