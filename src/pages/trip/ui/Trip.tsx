@@ -142,10 +142,7 @@ export const TripPage = () => {
 					</div>
 
 					{/* 멤버 목록 사이드바: 데스크톱 전용 */}
-					<div
-						className="hidden sm:block rounded-xl p-4"
-						style={{ border: "1px solid #e5e7eb", backgroundColor: "#fafafa" }}
-					>
+					<div className="hidden sm:block rounded-xl p-4 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
 						<TripMemberList tripId={trip!.id} myMemberId={member!.id} />
 					</div>
 				</div>
