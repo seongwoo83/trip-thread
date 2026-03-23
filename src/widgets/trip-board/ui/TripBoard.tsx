@@ -77,7 +77,7 @@ export const TripBoard = ({ tripId }: Props) => {
 						return (
 							<div
 								key={post.id}
-								className="w-full rounded-2xl border border-gray-200 bg-white p-4 text-left transition-colors hover:bg-gray-50 cursor-pointer"
+								className="w-full rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-left transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
 								onClick={() => navigate(`/trip/${tripId}/post/${post.id}`)}
 							>
 								{/* 작성자 + 삭제 */}
@@ -85,7 +85,7 @@ export const TripBoard = ({ tripId }: Props) => {
 									<div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">
 										{avatarLetter(post.author.nickname)}
 									</div>
-									<span className="text-sm font-semibold text-gray-800">
+									<span className="text-sm font-semibold text-gray-800 dark:text-gray-100">
 										{post.author.nickname}
 									</span>
 									<span className="ml-auto text-xs text-gray-400">
@@ -121,7 +121,7 @@ export const TripBoard = ({ tripId }: Props) => {
 
 								{/* 내용 */}
 								{post.content && (
-									<p className="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-700">
+									<p className="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-700 dark:text-gray-200">
 										{post.content}
 									</p>
 								)}
@@ -155,7 +155,7 @@ export const TripBoard = ({ tripId }: Props) => {
 					)}
 				</Stack>
 			) : (
-				<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 py-16 text-center">
+				<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 py-16 text-center">
 					<Text size="sm" c="gray.4">
 						{t("board.empty")}
 					</Text>
