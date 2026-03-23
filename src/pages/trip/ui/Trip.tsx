@@ -6,6 +6,7 @@ import { useTripAccess } from "@/entities/trip";
 import { DestinationVoteWidget } from "@/widgets/destination-vote";
 import { TripBoard } from "@/widgets/trip-board";
 import { TripMemberList } from "@/widgets/trip-members";
+import { useDeleteTrip } from "@/features/delete-trip";
 
 export const TripPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -17,6 +18,11 @@ export const TripPage = () => {
 		{ open: openMemberModal, close: closeMemberModal },
 	] = useDisclosure(false);
 	const { t } = useTranslation();
+	const deleteTrip = useDeleteTrip();
+	const [
+		deleteModalOpened,
+		{ open: openDeleteModal, close: closeDeleteModal },
+	] = useDisclosure(false);
 
 	if (status === "loading") {
 		return (
@@ -115,6 +121,16 @@ export const TripPage = () => {
 							>
 								{clipboard.copied ? t("common.copied") : t("trip.shareInvite")}
 							</Button>
+							{member!.role === "host" && (
+								<Button
+									variant="subtle"
+									size="xs"
+									color="red"
+									onClick={openDeleteModal}
+								>
+									여행 삭제
+								</Button>
+							)}
 						</div>
 					</div>
 					{trip!.destination && (
@@ -163,6 +179,42 @@ export const TripPage = () => {
 				size="xs"
 			>
 				<TripMemberList tripId={trip!.id} myMemberId={member!.id} />
+			</Modal>
+			{/* 여행 삭제 확인 모달 */}
+			<Modal
+				opened={deleteModalOpened}
+				onClose={closeDeleteModal}
+				title={
+					<Text fw={600} size="sm" c="red">
+						여행 삭제
+					</Text>
+				}
+				size="xs"
+			>
+				<Stack gap="md">
+					<Text size="sm" c="gray.7">
+						<strong>{trip!.name}</strong> 여행을 삭제하면 모든 게시글, 댓글,
+						투표 기록이 영구적으로 사라집니다. 이 작업은 되돌릴 수 없습니다.
+					</Text>
+					<div className="flex gap-2 justify-end">
+						<Button
+							variant="subtle"
+							color="gray"
+							size="sm"
+							onClick={closeDeleteModal}
+						>
+							취소
+						</Button>
+						<Button
+							color="red"
+							size="sm"
+							loading={deleteTrip.isPending}
+							onClick={() => deleteTrip.mutate(trip!.id)}
+						>
+							삭제
+						</Button>
+					</div>
+				</Stack>
 			</Modal>
 		</>
 	);
