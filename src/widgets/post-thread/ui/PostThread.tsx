@@ -77,10 +77,10 @@ const CommentNode = ({
 			<div
 				className={`rounded-xl p-3 ${
 					comment.depth === 0
-						? "bg-white"
+						? "bg-white dark:bg-gray-800"
 						: comment.depth === 1
-							? "ml-6 bg-gray-50"
-							: "ml-12 bg-gray-100"
+							? "ml-6 bg-gray-50 dark:bg-gray-700"
+							: "ml-12 bg-gray-100 dark:bg-gray-600"
 				}`}
 			>
 				{/* 작성자 */}
@@ -88,7 +88,7 @@ const CommentNode = ({
 					<div className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">
 						{avatarLetter(comment.author.nickname)}
 					</div>
-					<span className="text-xs font-semibold text-gray-700">
+					<span className="text-xs font-semibold text-gray-700 dark:text-gray-200">
 						{comment.author.nickname}
 					</span>
 					<span className="ml-auto text-xs text-gray-400">
@@ -153,7 +153,7 @@ const CommentNode = ({
 						</div>
 					</form>
 				) : (
-					<p className="text-sm leading-relaxed text-gray-700">
+					<p className="text-sm leading-relaxed text-gray-700 dark:text-gray-200">
 						{comment.content}
 					</p>
 				)}
@@ -256,13 +256,13 @@ export const PostThread = ({ postId, tripId }: Props) => {
 			</button>
 
 			{/* 원본 포스트 */}
-			<div className="rounded-2xl border border-gray-200 bg-white p-5">
+			<div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5">
 				<div className="mb-3 flex items-center gap-2">
 					<div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">
 						{avatarLetter(post.author.nickname)}
 					</div>
 					<div>
-						<p className="text-sm font-semibold text-gray-800">
+						<p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
 							{post.author.nickname}
 						</p>
 						<p className="text-xs text-gray-400">
@@ -316,7 +316,7 @@ export const PostThread = ({ postId, tripId }: Props) => {
 							/>
 						)}
 						{post.content && (
-							<p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800">
+							<p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800 dark:text-gray-100">
 								{post.content}
 							</p>
 						)}

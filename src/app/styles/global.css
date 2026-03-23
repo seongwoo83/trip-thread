@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "@mantine/core/styles.css";
 
+/* Mantine의 data-mantine-color-scheme 속성을 Tailwind dark: variant에 연결 */
+@variant dark (&:where([data-mantine-color-scheme=dark], [data-mantine-color-scheme=dark] *));
+
 @font-face {
 	font-family: "Paperozi";
 	src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-1Thin.woff2")
