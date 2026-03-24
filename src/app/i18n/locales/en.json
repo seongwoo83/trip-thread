@@ -11,6 +11,10 @@
 		"loading": "Loading...",
 		"goHome": "Back to Home"
 	},
+	"notFound": {
+		"title": "Page not found",
+		"description": "The page doesn't exist or has been removed."
+	},
 	"header": {
 		"title": "trip-thread"
 	},
