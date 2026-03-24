@@ -20,14 +20,15 @@ This project follows **Feature-Sliced Design (FSD)** — a layered architecture 
 
 ```
 src/
-├── app/         # App layer: entry point, providers, router, global styles
+├── app/         # App layer: entry point, providers, router, global styles, i18n
 ├── pages/       # Pages layer: route-level components
 ├── widgets/     # Widgets layer: self-contained UI blocks
 ├── features/    # User interactions / business actions
 ├── entities/    # Business domain objects
 └── shared/
     ├── api/     # Supabase client instance (shared/api/supabase.ts)
-    └── lib/     # Utilities: deviceId, memberToken, crypto, uploadImage
+    ├── lib/     # Utilities: deviceId, memberToken, crypto, uploadImage
+    └── store/   # Zustand stores (memberSession)
 ```
 
 **Layer rules:**
@@ -56,12 +57,14 @@ widgets/header/
 - **Global styles**: `src/app/styles/reset.css` + `src/app/styles/global.css` (loaded in `main.tsx`)
 - **ESLint**: TypeScript + react-hooks rules enforced; `react-hooks/rules-of-hooks` is error, `exhaustive-deps` is warn
 - **UI Framework**: Mantine v7
+- **i18n**: `src/app/i18n/` — Korean (`ko.json`) + English (`en.json`) 지원
 
 ## State & Data Fetching
 
 - **Client state**: Zustand — store files go in the relevant `features/` or `entities/` slice
 - **Server state**: TanStack Query v5 — `QueryClient` is instantiated in `src/app/providers/index.tsx`; `ReactQueryDevtools` is included in dev
 - **Backend**: Supabase — client singleton at `src/shared/api/supabase.ts`, imported via `@/shared/api`
+- **Realtime**: Supabase Realtime — `posts`/`comments` 테이블 구독, TanStack Query invalidation으로 UI 자동 갱신
 - **Env vars**: Copy `.env.example` → `.env` and fill in `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` (Supabase Dashboard → Project Settings → API → "publishable key", formerly "anon key"). Never use the secret key in frontend code.
 - **Deployment**: AWS static web hosting (Vite SPA build → `dist/`)
 
@@ -145,7 +148,7 @@ comments
 
 ## 구현 완료 현황
 
-### 기반 기능 (6-Feature Roadmap) — 전부 완료 ✅
+### 기반 기능
 
 **(1) device_id — `shared/lib/deviceId.ts`** ✅
 
@@ -178,7 +181,7 @@ comments
 - status: `loading | authorized | unauthorized | not-found`
 - Trip 페이지 및 Post 페이지 진입 시 실행
 
-### Trip Thread 기능 — 전부 완료 ✅
+### Trip Thread 기능
 
 **(7) 여행지 투표 — `widgets/destination-vote`** ✅
 
@@ -194,6 +197,7 @@ comments
 - 게시글 피드 (최신순), 작성자 닉네임 + 댓글 수 표시
 - 이미지 썸네일(h-40, object-cover) 표시
 - 게시글 클릭 → `/trip/:id/post/:postId` 이동
+- 무한 스크롤 (`entities/post/model/useInfinitePosts.ts`, TanStack Query `useInfiniteQuery`)
 
 **(9) 댓글 — `features/create-comment`** ✅
 
@@ -221,6 +225,41 @@ comments
 - 댓글: 인라인 Textarea → 저장/취소 버튼 전환
 - Storage 오류 시 에러 throw로 뮤테이션 실패 처리
 
+**(13) 실시간 업데이트 — Supabase Realtime** ✅
+
+- `entities/post/model/useRealtimePosts.ts`: `posts` 테이블 INSERT/DELETE 구독 → `["posts", tripId]` invalidate
+- `entities/comment/model/useRealtimeComments.ts`: `comments` 테이블 INSERT/DELETE 구독 → `["comments", postId]` invalidate
+- `widgets/trip-board`, `widgets/post-thread`에서 각각 채널 구독 관리
+
+**(14) 초대 코드 공유 UI** ✅
+
+- Trip 페이지 헤더 우측 "초대 공유" 버튼
+- Web Share API 지원 기기(모바일): `navigator.share({ title, text })` → 시스템 공유 시트
+- 미지원 기기(데스크톱): `useClipboard` (`@mantine/hooks`) → 초대 코드 복사 + 버튼 2초간 "복사됨 ✓" 표시
+
+**(15) 멤버 목록 — `widgets/trip-members`** ✅
+
+- 데스크톱: Trip 페이지 우측 사이드바에 항상 표시
+- 모바일: "멤버 보기" 버튼 → Modal로 표시
+- 각 멤버: 이니셜 아바타 + 닉네임 + 호스트 뱃지 + "(나)" 표시
+- 구현: `entities/trip-member/model/useTripMembers.ts`, `widgets/trip-members/ui/TripMemberList.tsx`
+
+**(16) 여행 삭제 — `features/delete-trip`** ✅
+
+- 호스트 전용
+- 연결된 모든 데이터(posts, comments, members, proposals, votes, Storage 이미지) 삭제
+- localStorage 정리
+
+**(17) 다크 모드** ✅
+
+- Mantine color scheme 토글 (`light` / `dark`)
+- 설정은 localStorage에 유지
+
+**(18) 다국어 지원 (i18n)** ✅
+
+- `src/app/i18n/locales/ko.json` (한국어), `en.json` (영어)
+- 언어 전환 UI 포함
+
 **(공통) 멤버 세션 스토어 — `shared/store/memberSession.ts`** ✅
 
 - 인증된 멤버의 `id`와 `role`을 Zustand로 전역 관리
@@ -233,12 +272,13 @@ comments
 
 ### Entities
 
-| 슬라이스                        | 주요 파일                                              | 설명                                    |
-| ------------------------------- | ------------------------------------------------------ | --------------------------------------- |
-| `entities/trip`                 | `useTripAccess.ts`, `useMyTrips.ts`, `localStorage.ts` | 여행 접근 권한, 목록 캐시               |
-| `entities/post`                 | `usePost.ts`, `usePosts.ts`                            | 게시글 조회 (작성자 JOIN, 댓글 수 집계) |
-| `entities/comment`              | `useComments.ts`                                       | 댓글 트리 구조 빌드                     |
-| `entities/destination-proposal` | `useDestinationProposals.ts`                           | 제안 목록 + 투표 집계                   |
+| 슬라이스                        | 주요 파일                                                                 | 설명                                    |
+| ------------------------------- | ------------------------------------------------------------------------- | --------------------------------------- |
+| `entities/trip`                 | `useTripAccess.ts`, `useMyTrips.ts`, `localStorage.ts`                    | 여행 접근 권한, 목록 캐시               |
+| `entities/trip-member`          | `useTripMembers.ts`                                                       | 멤버 목록 조회                          |
+| `entities/post`                 | `usePost.ts`, `usePosts.ts`, `useInfinitePosts.ts`, `useRealtimePosts.ts` | 게시글 조회 (무한 스크롤 + 실시간 구독) |
+| `entities/comment`              | `useComments.ts`, `useRealtimeComments.ts`                                | 댓글 트리 구조 빌드 + 실시간 구독       |
+| `entities/destination-proposal` | `useDestinationProposals.ts`                                              | 제안 목록 + 투표 집계                   |
 
 ### Features
 
@@ -256,15 +296,17 @@ comments
 | `features/delete-comment`      | `useDeleteComment.ts`                                   | 댓글 삭제                         |
 | `features/edit-post`           | `useEditPost.ts`, `EditPostForm.tsx`                    | 게시글 수정 (이미지 교체/삭제)    |
 | `features/edit-comment`        | `useEditComment.ts`                                     | 댓글 수정                         |
+| `features/delete-trip`         | `useDeleteTrip.ts`                                      | 여행 삭제 (호스트 전용)           |
 
 ### Widgets
 
-| 슬라이스                   | 설명                         |
-| -------------------------- | ---------------------------- |
-| `widgets/header`           | 앱 헤더                      |
-| `widgets/destination-vote` | 여행지 투표 전체 UI          |
-| `widgets/trip-board`       | 게시글 피드 (목록 + 작성 폼) |
-| `widgets/post-thread`      | 게시글 상세 + 댓글 트리      |
+| 슬라이스                   | 설명                                        |
+| -------------------------- | ------------------------------------------- |
+| `widgets/header`           | 앱 헤더 (다크모드 토글, 언어 전환)          |
+| `widgets/destination-vote` | 여행지 투표 전체 UI                         |
+| `widgets/trip-board`       | 게시글 피드 (무한 스크롤 + 작성 폼)         |
+| `widgets/post-thread`      | 게시글 상세 + 댓글 트리                     |
+| `widgets/trip-members`     | 멤버 목록 (데스크톱 사이드바 + 모바일 모달) |
 
 ### Shared
 
@@ -281,45 +323,48 @@ comments
 
 ## 앞으로 해야 할 것
 
-### (13) 실시간 업데이트 — Supabase Realtime ⬜
-
-- `posts`, `comments` 테이블에 Supabase Realtime 구독
-- 다른 멤버가 게시글/댓글 작성 시 자동 갱신 (TanStack Query invalidation)
-- `widgets/trip-board`, `widgets/post-thread`에서 채널 구독 관리
-
-### (14) 초대 코드 공유 UI ✅
-
-- Trip 페이지 헤더 우측 "초대 공유" 버튼
-- Web Share API 지원 기기(모바일): `navigator.share({ title, text })` → 시스템 공유 시트
-- 미지원 기기(데스크톱): `useClipboard` (`@mantine/hooks`) → 초대 코드 복사 + 버튼 2초간 "복사됨 ✓" 표시
-
-### (15) 여행 정보 수정 — `features/edit-trip` ⬜
+### (A) 여행 정보 수정 — `features/edit-trip` ⬜
 
 - 호스트 전용: 여행 이름, 날짜 수정
 - Trip 페이지 내 설정 버튼 → 모달
 
-### (16) 멤버 목록 ✅ / 멤버 관리 ⬜
+### (B) 멤버 강퇴 — `features/kick-member` ⬜
 
-- 데스크톱: Trip 페이지 우측 사이드바에 항상 표시 (`sm:grid-cols-[1fr_220px]`)
-- 모바일: "멤버 보기" 버튼(hiddenFrom="sm") → Modal로 표시
-- 각 멤버: 이니셜 아바타 + 닉네임 + 호스트 뱃지 + "(나)" 표시
-- 구현: `entities/trip-member/model/useTripMembers.ts`, `widgets/trip-members/ui/TripMemberList.tsx`
-- **미구현**: 호스트 전용 멤버 강퇴 기능
+- 호스트 전용
+- `widgets/trip-members` 내 강퇴 버튼 표시
+- 강퇴된 멤버는 해당 여행 재접근 불가 (토큰 무효화)
 
-### (17) 게시글 피드 페이지네이션 / 무한 스크롤 ⬜
+### (C) 빈 상태 / 에러 상태 UI 개선 ⬜
 
-- 현재: 전체 게시글 한 번에 로딩
-- TanStack Query `useInfiniteQuery` 적용
-- Supabase `range()` 또는 커서 기반 페이지네이션
-
-### (18) 빈 상태 / 에러 상태 UI 개선 ⬜
-
-- 게시글 없을 때 empty state
+- 게시글 없을 때 empty state (일러스트 + 안내 문구)
 - 네트워크 오류 시 retry 버튼
 - 이미지 로딩 실패 시 fallback
 
-### (19) 여행 삭제 — `features/delete-trip` ⬜
+### (D) 게시글 다중 이미지 ⬜
 
-- 호스트 전용
-- 연결된 모든 데이터(posts, comments, members, proposals, votes, Storage 이미지) 삭제
-- localStorage 정리
+- 현재: 게시글 당 이미지 1장
+- 여러 장 업로드 → Carousel 또는 Grid 표시
+- DB: `image_url text[]` 또는 별도 `post_images` 테이블
+
+### (E) 게시글 반응(이모지) — `features/react-post` ⬜
+
+- 게시글에 이모지 리액션 추가 (좋아요, 웃음 등)
+- DB: `post_reactions (post_id, member_id, emoji)` UNIQUE (post_id, member_id, emoji)
+
+### (F) 여행 체크리스트 ⬜
+
+- 공유 짐 목록 / 준비물 체크리스트
+- 체크 항목 추가/삭제/완료 토글
+- DB: `checklist_items (trip_id, content, is_done, created_by)`
+
+### (G) 여행 일정표 (타임라인) ⬜
+
+- 날짜별 일정 등록 및 조회
+- Trip 페이지 내 탭 또는 섹션으로 분리
+- DB: `schedules (trip_id, date, title, description, order)`
+
+### (H) 알림 — Push Notification ⬜
+
+- 새 게시글/댓글 작성 시 Web Push 알림
+- Service Worker + Notification API + Supabase Realtime 연동
+- 알림 수신 동의 UI 필요
