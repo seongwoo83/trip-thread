@@ -7,6 +7,7 @@ import { CreatePostForm } from "@/features/create-post";
 import { useDeletePost } from "@/features/delete-post";
 import { useMemberSession } from "@/shared/store";
 import i18n from "@/app/i18n";
+import styles from "./TripBoard.module.scss";
 
 type Props = {
 	tripId: string;
@@ -27,6 +28,19 @@ function avatarLetter(nickname: string) {
 	return nickname.charAt(0).toUpperCase();
 }
 
+// Deterministic gradient from nickname
+function avatarGradient(nickname: string): string {
+	const h = nickname.charCodeAt(0) % 5;
+	const gradients = [
+		"linear-gradient(135deg, #14919b, #38bec9)",
+		"linear-gradient(135deg, #0e7c86, #54d1db)",
+		"linear-gradient(135deg, #38bec9, #87eaf2)",
+		"linear-gradient(135deg, #0a6c74, #2cb1bc)",
+		"linear-gradient(135deg, #07585f, #14919b)",
+	];
+	return gradients[h];
+}
+
 export const TripBoard = ({ tripId }: Props) => {
 	const navigate = useNavigate();
 	const { memberId, memberRole } = useMemberSession();
@@ -39,12 +53,10 @@ export const TripBoard = ({ tripId }: Props) => {
 
 	const posts = data?.pages.flat() ?? [];
 
-	// 센티널 요소가 뷰포트에 들어오면 다음 페이지 로드
 	const sentinelRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		const el = sentinelRef.current;
 		if (!el) return;
-
 		const observer = new IntersectionObserver(
 			([entry]) => {
 				if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -53,7 +65,6 @@ export const TripBoard = ({ tripId }: Props) => {
 			},
 			{ threshold: 0.1 },
 		);
-
 		observer.observe(el);
 		return () => observer.disconnect();
 	}, [hasNextPage, isFetchingNextPage, fetchNextPage]);
@@ -66,35 +77,40 @@ export const TripBoard = ({ tripId }: Props) => {
 
 			{isPending ? (
 				<div className="flex justify-center py-12">
-					<Loader size="sm" color="indigo" />
+					<Loader size="sm" color="cyan" />
 				</div>
 			) : posts.length > 0 ? (
-				<Stack gap="sm">
-					{posts.map((post) => {
+				<Stack gap={10}>
+					{posts.map((post, idx) => {
 						const canDelete =
 							post.author.id === memberId || memberRole === "host";
 
 						return (
 							<div
 								key={post.id}
-								className="w-full rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-left transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+								className={`animate-float-in ${styles.postCard}`}
+								style={{ animationDelay: `${idx * 40}ms` }}
 								onClick={() => navigate(`/trip/${tripId}/post/${post.id}`)}
 							>
-								{/* 작성자 + 삭제 */}
-								<div className="mb-2 flex items-center gap-2">
-									<div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">
+								<div className={styles.authorRow}>
+									<div
+										className={styles.avatar}
+										style={{ background: avatarGradient(post.author.nickname) }}
+									>
 										{avatarLetter(post.author.nickname)}
 									</div>
-									<span className="text-sm font-semibold text-gray-800 dark:text-gray-100">
-										{post.author.nickname}
-									</span>
-									<span className="ml-auto text-xs text-gray-400">
-										{formatRelativeTime(post.created_at)}
-									</span>
+									<div className={styles.authorMeta}>
+										<span className={styles.authorName}>
+											{post.author.nickname}
+										</span>
+										<span className={styles.time}>
+											{formatRelativeTime(post.created_at)}
+										</span>
+									</div>
 									{canDelete && (
 										<button
 											type="button"
-											className="text-xs text-gray-400 hover:text-red-500"
+											className={styles.deleteButton}
 											disabled={deletePost.isPending}
 											onClick={(e) => {
 												e.stopPropagation();
@@ -110,25 +126,28 @@ export const TripBoard = ({ tripId }: Props) => {
 									)}
 								</div>
 
-								{/* 이미지 썸네일 */}
+								{/* Image */}
 								{post.image_url && (
-									<img
-										src={post.image_url}
-										alt=""
-										className="mt-2 h-40 w-full rounded-xl object-cover"
-									/>
+									<img src={post.image_url} alt="" className={styles.image} />
 								)}
 
-								{/* 내용 */}
 								{post.content && (
-									<p className="mt-2 line-clamp-3 text-sm leading-relaxed text-gray-700 dark:text-gray-200">
+									<p className={`line-clamp-3 ${styles.content}`}>
 										{post.content}
 									</p>
 								)}
 
-								{/* 댓글 수 */}
-								<div className="mt-3 flex items-center gap-1 text-xs text-gray-400">
-									<span>💬</span>
+								<div className={styles.commentRow}>
+									<svg
+										width="14"
+										height="14"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2"
+									>
+										<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+									</svg>
 									<span>
 										{post.comment_count > 0
 											? t("board.commentCount", { count: post.comment_count })
@@ -139,27 +158,26 @@ export const TripBoard = ({ tripId }: Props) => {
 						);
 					})}
 
-					{/* 무한 스크롤 센티널 */}
 					<div ref={sentinelRef} />
 
 					{isFetchingNextPage && (
 						<div className="flex justify-center py-4">
-							<Loader size="xs" color="indigo" />
+							<Loader size="xs" color="cyan" />
 						</div>
 					)}
 
 					{!hasNextPage && posts.length > 0 && (
-						<Text size="xs" c="gray.4" ta="center" py="sm">
+						<Text size="xs" ta="center" py="sm" className={styles.allLoaded}>
 							{t("board.allLoaded")}
 						</Text>
 					)}
 				</Stack>
 			) : (
-				<div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 py-16 text-center">
-					<Text size="sm" c="gray.4">
+				<div className={styles.emptyState}>
+					<Text size="sm" className={styles.emptyTitle}>
 						{t("board.empty")}
 					</Text>
-					<Text size="xs" c="gray.4" mt={4}>
+					<Text size="xs" mt={4} className={styles.emptyHint}>
 						{t("board.emptyAction")}
 					</Text>
 				</div>

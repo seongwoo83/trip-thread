@@ -1,0 +1,104 @@
+// ──────────────────────────────────────────
+// Design Tokens: "Coastal Glass"
+// ──────────────────────────────────────────
+
+// Ocean palette
+$ocean-deep: #07585f;
+$ocean-800: #0a6c74;
+$ocean-700: #0e7c86;
+$ocean-600: #14919b;
+$ocean-500: #2cb1bc;
+$ocean-400: #38bec9;
+$ocean-300: #54d1db;
+$ocean-200: #87eaf2;
+$ocean-100: #bef8fd;
+$ocean-50: #e0fcff;
+
+// Text
+$text-heading: #1a3a4a;
+$text-body: #2d4a56;
+$text-secondary: #3d5a66;
+$text-muted: #5f7d8a;
+$text-label: #7a8f9a;
+$text-subtle: #8a9ba5;
+$text-placeholder: #a8b8c2;
+$text-ghost: #c4d0d6;
+
+// Surfaces
+$surface-sand: #faf8f5;
+$surface-card: rgba(255, 255, 255, 0.55);
+$surface-card-hover: rgba(255, 255, 255, 0.75);
+$surface-tinted: rgba(14, 124, 134, 0.03);
+$surface-warm-tinted: rgba(251, 146, 60, 0.03);
+$surface-midnight: #0c1524;
+$surface-card-dark: rgba(12, 21, 36, 0.55);
+$surface-card-dark-hover: rgba(12, 21, 36, 0.72);
+$surface-tinted-dark: rgba(56, 190, 201, 0.08);
+
+// Borders
+$border-subtle: rgba(14, 124, 134, 0.06);
+$border-default: rgba(14, 124, 134, 0.08);
+$border-emphasis: rgba(14, 124, 134, 0.1);
+$border-active: rgba(14, 124, 134, 0.15);
+$border-strong: rgba(14, 124, 134, 0.2);
+$border-dashed: rgba(14, 124, 134, 0.12);
+$border-dark-subtle: rgba(84, 209, 219, 0.08);
+$border-dark-default: rgba(84, 209, 219, 0.12);
+$border-dark-strong: rgba(84, 209, 219, 0.2);
+
+// Shadows
+$shadow-sm: 0 1px 3px rgba(14, 124, 134, 0.04);
+$shadow-md: 0 6px 20px rgba(14, 124, 134, 0.06);
+$shadow-lg:
+	0 8px 24px rgba(14, 124, 134, 0.08),
+	0 2px 8px rgba(14, 124, 134, 0.04);
+$shadow-dark: 0 12px 28px rgba(3, 10, 20, 0.22);
+
+// Gradients
+$gradient-ocean: linear-gradient(135deg, $ocean-600 0%, $ocean-700 100%);
+$gradient-destination: linear-gradient(
+	135deg,
+	rgba(14, 124, 134, 0.08),
+	rgba(56, 190, 201, 0.06)
+);
+$gradient-voted: linear-gradient(
+	135deg,
+	rgba(14, 124, 134, 0.06),
+	rgba(56, 190, 201, 0.04)
+);
+$gradient-destination-dark: linear-gradient(
+	135deg,
+	rgba(84, 209, 219, 0.16),
+	rgba(14, 124, 134, 0.18)
+);
+$gradient-voted-dark: linear-gradient(
+	135deg,
+	rgba(84, 209, 219, 0.16),
+	rgba(12, 21, 36, 0.28)
+);
+
+// Avatar gradients
+$avatar-gradients: (
+	0: linear-gradient(135deg, #14919b, #38bec9),
+	1: linear-gradient(135deg, #0e7c86, #54d1db),
+	2: linear-gradient(135deg, #38bec9, #87eaf2),
+	3: linear-gradient(135deg, #0a6c74, #2cb1bc),
+	4: linear-gradient(135deg, #07585f, #14919b),
+);
+
+// Radii
+$radius-sm: 10px;
+$radius-md: 12px;
+$radius-lg: 14px;
+$radius-xl: 16px;
+$radius-2xl: 18px;
+$radius-pill: 20px;
+$radius-full: 999px;
+
+// Transitions
+$ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+$transition-fast: 0.15s $ease-out;
+$transition-default: 0.25s ease;
+
+// Danger
+$danger: #ef4444;

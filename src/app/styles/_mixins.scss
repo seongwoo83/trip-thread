@@ -1,0 +1,85 @@
+@use "./tokens" as *;
+
+@mixin dark {
+	:global([data-mantine-color-scheme="dark"]) & {
+		@content;
+	}
+}
+
+@mixin glass-card(
+	$padding: 18px,
+	$radius: $radius-xl,
+	$background: $surface-card,
+	$border: $border-default
+) {
+	padding: $padding;
+	border: 1px solid $border;
+	border-radius: $radius;
+	background: $background;
+	box-shadow: $shadow-sm;
+	backdrop-filter: blur(18px);
+
+	@include dark {
+		background: $surface-card-dark;
+		border-color: $border-dark-default;
+		box-shadow: $shadow-dark;
+	}
+}
+
+@mixin glass-hover {
+	transition:
+		transform $transition-default,
+		box-shadow $transition-default,
+		border-color $transition-default,
+		background-color $transition-default;
+
+	&:hover {
+		transform: translateY(-2px);
+		box-shadow: $shadow-lg;
+		border-color: $border-active;
+		background: $surface-card-hover;
+	}
+
+	@include dark {
+		&:hover {
+			background: $surface-card-dark-hover;
+			border-color: $border-dark-strong;
+		}
+	}
+}
+
+@mixin eyebrow {
+	font-size: 0.72rem;
+	font-weight: 500;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: $text-placeholder;
+}
+
+@mixin page-title {
+	font-size: clamp(1.6rem, 3vw, 1.85rem);
+	font-weight: 900;
+	line-height: 1.15;
+	letter-spacing: -0.035em;
+	color: $text-heading;
+
+	@include dark {
+		color: #e8f4f5;
+	}
+}
+
+@mixin body-text {
+	color: $text-body;
+
+	@include dark {
+		color: #c2dbe0;
+	}
+}
+
+@mixin secondary-text {
+	color: $text-muted;
+
+	@include dark {
+		color: #8ca8b3;
+	}
+}

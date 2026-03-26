@@ -1,0 +1,140 @@
+@use "../../../app/styles/tokens" as *;
+@use "../../../app/styles/mixins" as *;
+
+.page {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+	padding-top: 1.5rem;
+}
+
+.stateTitle {
+	color: $text-secondary;
+
+	@include dark {
+		color: #d7e8eb;
+	}
+}
+
+.stateText {
+	color: $text-subtle;
+
+	@include dark {
+		color: #8ea6af;
+	}
+}
+
+.meta {
+	@include eyebrow;
+
+	margin-bottom: 0.375rem;
+}
+
+.headingRow {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 0.75rem;
+}
+
+.title {
+	@include page-title;
+}
+
+.actions {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	gap: 0.25rem;
+	margin-top: 0.25rem;
+}
+
+.actionButton {
+	font-size: 0.75rem;
+}
+
+.destinationBadge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	margin-top: 0.75rem;
+	padding: 5px 14px;
+	border: 1px solid $border-emphasis;
+	border-radius: $radius-pill;
+	background: $gradient-destination;
+
+	@include dark {
+		border-color: $border-dark-default;
+		background: $gradient-destination-dark;
+	}
+}
+
+.destinationText {
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: $ocean-700;
+
+	@include dark {
+		color: $ocean-200;
+	}
+}
+
+.contentGrid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1.5rem;
+}
+
+.sidebar {
+	@include glass-card(
+		16px 14px,
+		$radius-lg,
+		rgba(255, 255, 255, 0.45),
+		$border-subtle
+	);
+}
+
+.modalTitle {
+	font-size: 0.875rem;
+	font-weight: 700;
+	color: $text-heading;
+
+	@include dark {
+		color: #e8f4f5;
+	}
+}
+
+.deleteTitle {
+	font-size: 0.875rem;
+	font-weight: 700;
+	color: $danger;
+}
+
+.deleteText {
+	@include body-text;
+}
+
+.modalActions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.5rem;
+}
+
+@media (min-width: 40rem) {
+	.contentGrid {
+		grid-template-columns: minmax(0, 1fr) 200px;
+		align-items: start;
+	}
+}
+
+@media (max-width: 40rem) {
+	.headingRow {
+		flex-direction: column;
+	}
+
+	.actions {
+		width: 100%;
+		justify-content: flex-start;
+		flex-wrap: wrap;
+	}
+}

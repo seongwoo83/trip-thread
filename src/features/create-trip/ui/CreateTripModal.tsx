@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useCreateTrip } from "@/features/create-trip/model/useCreateTrip";
 import type { CreateTripResult } from "@/features/create-trip/model/useCreateTrip";
 import { formatRecoveryCode } from "@/shared/lib";
+import styles from "./CreateTripModal.module.scss";
 
 type Props = {
 	opened: boolean;
@@ -56,16 +57,20 @@ export const CreateTripModal = ({ opened, onClose }: Props) => {
 			<Modal
 				opened={opened}
 				onClose={handleClose}
-				title={<Text fw={600}>{t("createTrip.success.title")}</Text>}
+				title={
+					<Text fw={700} className={styles.modalTitle}>
+						{t("createTrip.success.title")}
+					</Text>
+				}
 				centered
 			>
 				<Stack gap="lg">
 					<div>
-						<Text size="sm" c="dimmed" mb="xs">
+						<Text size="sm" mb="xs" className={styles.subtitle}>
 							{t("createTrip.success.subtitle")}
 						</Text>
-						<div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
-							<span className="flex-1 text-center text-2xl tracking-[0.25em] font-bold">
+						<div className={styles.inviteCard}>
+							<span className={styles.inviteCode}>
 								{result.trip.invite_code}
 							</span>
 							<CopyButton value={result.trip.invite_code}>
@@ -86,10 +91,8 @@ export const CreateTripModal = ({ opened, onClose }: Props) => {
 						<Text size="sm" mb="sm">
 							{t("createTrip.success.recoveryDescription")}
 						</Text>
-						<div className="flex items-center gap-3 rounded-xl border border-yellow-200 bg-white px-4 py-3">
-							<span className="flex-1 text-center text-xl tracking-[0.2em] font-bold font-mono">
-								{displayRecovery}
-							</span>
+						<div className={styles.recoveryCard}>
+							<span className={styles.recoveryCode}>{displayRecovery}</span>
 							<CopyButton value={result.recoveryCode}>
 								{({ copied, copy }) => (
 									<Button
@@ -116,6 +119,7 @@ export const CreateTripModal = ({ opened, onClose }: Props) => {
 								handleClose();
 								navigate(`/trip/${result.trip.id}`);
 							}}
+							className={styles.primaryButton}
 						>
 							{t("createTrip.success.goToTrip")}
 						</Button>
@@ -129,7 +133,11 @@ export const CreateTripModal = ({ opened, onClose }: Props) => {
 		<Modal
 			opened={opened}
 			onClose={handleClose}
-			title={<Text fw={600}>{t("createTrip.title")}</Text>}
+			title={
+				<Text fw={700} className={styles.modalTitle}>
+					{t("createTrip.title")}
+				</Text>
+			}
 			centered
 		>
 			<form onSubmit={handleSubmit}>
@@ -167,7 +175,12 @@ export const CreateTripModal = ({ opened, onClose }: Props) => {
 							setForm((f) => ({ ...f, nickname: e.target.value }))
 						}
 					/>
-					<Button type="submit" loading={isPending} mt="xs">
+					<Button
+						type="submit"
+						loading={isPending}
+						mt="xs"
+						className={styles.primaryButton}
+					>
 						{t("createTrip.form.submit")}
 					</Button>
 				</Stack>

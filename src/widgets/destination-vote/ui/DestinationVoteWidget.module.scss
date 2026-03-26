@@ -1,0 +1,163 @@
+@use "../../../app/styles/tokens" as *;
+@use "../../../app/styles/mixins" as *;
+
+.title {
+	font-size: 1.3rem;
+	font-weight: 900;
+	letter-spacing: -0.02em;
+	color: $text-heading;
+
+	@include dark {
+		color: #edf7f8;
+	}
+}
+
+.subtitle {
+	color: $text-subtle;
+
+	@include dark {
+		color: #8fa7b0;
+	}
+}
+
+.emptyState {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 3rem 1rem;
+	border: 1.5px dashed $border-dashed;
+	border-radius: $radius-xl;
+	background: rgba(255, 255, 255, 0.3);
+	text-align: center;
+
+	@include dark {
+		background: rgba(12, 21, 36, 0.3);
+		border-color: $border-dark-default;
+	}
+}
+
+.emptyText {
+	color: $text-placeholder;
+
+	@include dark {
+		color: #8095a0;
+	}
+}
+
+.emptyHint {
+	color: $text-ghost;
+
+	@include dark {
+		color: #6f8792;
+	}
+}
+
+.proposalCard {
+	@include glass-card(
+		16px 18px,
+		$radius-lg,
+		rgba(255, 255, 255, 0.5),
+		$border-subtle
+	);
+
+	animation-fill-mode: both;
+	transition:
+		transform $transition-default,
+		border-color $transition-default,
+		background $transition-default,
+		box-shadow $transition-default;
+
+	&[data-voted="true"] {
+		border-width: 1.5px;
+		border-color: $border-strong;
+		background: $gradient-voted;
+	}
+
+	@include dark {
+		&[data-voted="true"] {
+			border-color: $border-dark-strong;
+			background: $gradient-voted-dark;
+		}
+	}
+}
+
+.proposalRow {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	margin-bottom: 0.5rem;
+}
+
+.proposalHeading {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.voteBadge {
+	padding: 2px 8px;
+	border-radius: 10px;
+	background: rgba(14, 124, 134, 0.08);
+	font-size: 0.68rem;
+	font-weight: 700;
+	color: $ocean-600;
+
+	@include dark {
+		background: rgba(84, 209, 219, 0.12);
+		color: $ocean-200;
+	}
+}
+
+.proposalName {
+	color: $text-heading;
+
+	@include dark {
+		color: #edf7f8;
+	}
+}
+
+.proposalMeta {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.voteCount {
+	color: $text-subtle;
+
+	@include dark {
+		color: #8ea6af;
+	}
+}
+
+.totalVotes {
+	color: $text-placeholder;
+
+	@include dark {
+		color: #8095a0;
+	}
+}
+
+.formActions {
+	display: flex;
+	gap: 0.5rem;
+}
+
+.hostDivider {
+	padding-top: 1rem;
+	border-top: 1px solid $border-default;
+
+	@include dark {
+		border-top-color: $border-dark-default;
+	}
+}
+
+.hostHint {
+	color: $text-placeholder;
+
+	@include dark {
+		color: #8095a0;
+	}
+}
