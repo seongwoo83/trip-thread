@@ -1,0 +1,38 @@
+@use "../../../app/styles/tokens" as *;
+@use "../../../app/styles/mixins" as *;
+
+.page {
+	display: flex;
+	min-height: 60vh;
+	align-items: center;
+	justify-content: center;
+}
+
+.code {
+	line-height: 1;
+	font-size: 5rem;
+	font-weight: 900;
+	letter-spacing: -0.06em;
+	background: linear-gradient(135deg, $ocean-600, $ocean-300);
+	-webkit-text-fill-color: transparent;
+	-webkit-background-clip: text;
+}
+
+.title {
+	font-size: 1rem;
+	font-weight: 700;
+	color: $text-heading;
+
+	@include dark {
+		color: #edf7f8;
+	}
+}
+
+.description {
+	font-size: 0.85rem;
+	color: $text-subtle;
+
+	@include dark {
+		color: #8fa7b0;
+	}
+}
