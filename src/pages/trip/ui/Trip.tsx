@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button, Loader, Modal, Stack, Text } from "@mantine/core";
 import { useClipboard, useDisclosure } from "@mantine/hooks";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ import { DestinationVoteWidget } from "@/widgets/destination-vote";
 import { TripBoard } from "@/widgets/trip-board";
 import { TripMemberList } from "@/widgets/trip-members";
 import { useDeleteTrip } from "@/features/delete-trip";
+import styles from "./Trip.module.scss";
 
 export const TripPage = () => {
 	const { id } = useParams<{ id: string }>();
@@ -38,7 +39,7 @@ export const TripPage = () => {
 	if (status === "loading") {
 		return (
 			<div className="flex items-center justify-center py-32">
-				<Loader size="sm" color="indigo" />
+				<Loader size="sm" color="cyan" />
 			</div>
 		);
 	}
@@ -46,16 +47,17 @@ export const TripPage = () => {
 	if (status === "not-found") {
 		return (
 			<Stack align="center" gap="sm" pt={60}>
-				<Text size="lg" fw={600} c="gray.7">
+				<Text size="lg" fw={700} className={styles.stateTitle}>
 					{t("trip.notFound.title")}
 				</Text>
-				<Text size="sm" c="gray.5">
+				<Text size="sm" className={styles.stateText}>
 					{t("trip.notFound.description")}
 				</Text>
 				<Button
 					variant="subtle"
 					size="sm"
 					mt="xs"
+					color="cyan"
 					onClick={() => navigate("/")}
 				>
 					{t("common.goHome")}
@@ -67,16 +69,17 @@ export const TripPage = () => {
 	if (status === "unauthorized") {
 		return (
 			<Stack align="center" gap="sm" pt={60}>
-				<Text size="lg" fw={600} c="gray.7">
+				<Text size="lg" fw={700} className={styles.stateTitle}>
 					{t("trip.unauthorized.title")}
 				</Text>
-				<Text size="sm" c="gray.5" ta="center">
+				<Text size="sm" ta="center" className={styles.stateText}>
 					{t("trip.unauthorized.description")}
 				</Text>
 				<Button
 					variant="subtle"
 					size="sm"
 					mt="xs"
+					color="cyan"
 					onClick={() => navigate("/")}
 				>
 					{t("common.goHome")}
@@ -122,38 +125,30 @@ export const TripPage = () => {
 				<div className="invite-copy-toast__code">{trip!.invite_code}</div>
 			</div>
 
-			<Stack gap="xl" pt="xl">
-				{/* 여행 헤더 */}
+			<div className={`animate-float-in ${styles.page}`}>
 				<div>
-					<Text size="xs" c="gray.4" mb={4}>
-						{trip!.start_date} ~ {trip!.end_date}
-					</Text>
-					<div className="flex items-start justify-between gap-2">
-						<h1
-							className="text-2xl font-bold text-gray-900 tracking-tight"
-							style={{ fontFamily: "Paperozi" }}
-						>
-							{trip!.name}
-						</h1>
-						<div
-							className="flex items-center gap-1 shrink-0"
-							style={{ marginTop: 4 }}
-						>
-							{/* 멤버 보기 버튼: 모바일 전용 */}
+					<p className={styles.meta}>
+						{trip!.start_date} — {trip!.end_date}
+					</p>
+					<div className={styles.headingRow}>
+						<h1 className={styles.title}>{trip!.name}</h1>
+						<div className={styles.actions}>
 							<Button
 								variant="subtle"
 								size="xs"
 								color="gray"
 								hiddenFrom="sm"
 								onClick={openMemberModal}
+								className={styles.actionButton}
 							>
 								{t("trip.viewMembers")}
 							</Button>
 							<Button
 								variant="subtle"
 								size="xs"
-								color={clipboard.copied ? "teal" : "gray"}
+								color={clipboard.copied ? "cyan" : "gray"}
 								onClick={handleShare}
+								className={styles.actionButton}
 							>
 								{clipboard.copied
 									? t("common.copied")
@@ -165,6 +160,7 @@ export const TripPage = () => {
 									size="xs"
 									color="red"
 									onClick={openDeleteModal}
+									className={styles.actionButton}
 								>
 									여행 삭제
 								</Button>
@@ -172,17 +168,17 @@ export const TripPage = () => {
 						</div>
 					</div>
 					{trip!.destination && (
-						<div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1">
-							<span className="text-xs font-medium text-indigo-600">
+						<div className={styles.destinationBadge}>
+							<span className={styles.destinationText}>
 								📍 {trip!.destination}
 							</span>
 						</div>
 					)}
 				</div>
 
-				{/* Body: 데스크톱 2컬럼 / 모바일 1컬럼 */}
-				<div className="grid grid-cols-1 gap-6 sm:grid-cols-[1fr_220px] sm:items-start">
-					{/* 메인 콘텐츠 */}
+				<div className="wave-divider" />
+
+				<div className={styles.contentGrid}>
 					<div>
 						{!trip!.destination ? (
 							<DestinationVoteWidget
@@ -195,19 +191,17 @@ export const TripPage = () => {
 						)}
 					</div>
 
-					{/* 멤버 목록 사이드바: 데스크톱 전용 */}
-					<div className="hidden sm:block rounded-xl p-4 border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+					<div className={`${styles.sidebar} hidden sm:block`}>
 						<TripMemberList tripId={trip!.id} myMemberId={member!.id} />
 					</div>
 				</div>
-			</Stack>
+			</div>
 
-			{/* 멤버 목록 모달: 모바일 전용 */}
 			<Modal
 				opened={memberModalOpened}
 				onClose={closeMemberModal}
 				title={
-					<Text fw={600} size="sm">
+					<Text fw={700} size="sm" className={styles.modalTitle}>
 						{t("trip.memberListTitle")}
 					</Text>
 				}
@@ -215,23 +209,23 @@ export const TripPage = () => {
 			>
 				<TripMemberList tripId={trip!.id} myMemberId={member!.id} />
 			</Modal>
-			{/* 여행 삭제 확인 모달 */}
+
 			<Modal
 				opened={deleteModalOpened}
 				onClose={closeDeleteModal}
 				title={
-					<Text fw={600} size="sm" c="red">
+					<Text fw={700} size="sm" className={styles.deleteTitle}>
 						여행 삭제
 					</Text>
 				}
 				size="xs"
 			>
 				<Stack gap="md">
-					<Text size="sm" c="gray.7">
+					<Text size="sm" className={styles.deleteText}>
 						<strong>{trip!.name}</strong> 여행을 삭제하면 모든 게시글, 댓글,
 						투표 기록이 영구적으로 사라집니다. 이 작업은 되돌릴 수 없습니다.
 					</Text>
-					<div className="flex gap-2 justify-end">
+					<div className={styles.modalActions}>
 						<Button
 							variant="subtle"
 							color="gray"

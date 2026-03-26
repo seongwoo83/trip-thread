@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Button, Textarea } from "@mantine/core";
 import { useEditPost } from "../model/useEditPost";
+import styles from "@/features/post-editor/ui/PostEditor.module.scss";
 
 type Props = {
 	postId: string;
@@ -68,33 +69,27 @@ export const EditPostForm = ({
 				onChange={(e) => setContent(e.target.value)}
 				minRows={3}
 				autosize
-				styles={{
-					input: { fontSize: "0.9rem", resize: "none" },
-				}}
+				classNames={{ input: styles.textareaInput }}
 			/>
 
 			{displayImage && (
-				<div className="relative mt-3">
-					<img
-						src={displayImage}
-						alt=""
-						className="max-h-60 w-full rounded-xl object-cover"
-					/>
+				<div className={styles.previewWrap}>
+					<img src={displayImage} alt="" className={styles.previewImage} />
 					<button
 						type="button"
 						onClick={removeImage}
-						className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-xs text-white hover:bg-black/70"
+						className={styles.removeImageButton}
 					>
 						✕
 					</button>
 				</div>
 			)}
 
-			<div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3">
+			<div className={styles.footer}>
 				<button
 					type="button"
 					onClick={() => fileInputRef.current?.click()}
-					className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-indigo-500 transition-colors"
+					className={styles.uploadButton}
 				>
 					<svg
 						width="18"
@@ -119,7 +114,7 @@ export const EditPostForm = ({
 					onChange={handleFileChange}
 				/>
 
-				<div className="flex gap-2">
+				<div className={styles.actions}>
 					<Button
 						type="button"
 						variant="subtle"
@@ -136,6 +131,7 @@ export const EditPostForm = ({
 						radius="xl"
 						loading={editPost.isPending}
 						disabled={!canSubmit}
+						className={canSubmit ? styles.submitButton : undefined}
 					>
 						저장
 					</Button>
