@@ -43,6 +43,12 @@
 		},
 		"viewMembers": "View Members",
 		"shareInvite": "Share Invite",
+		"copyInviteCode": "Copy Invite Code",
+		"copyToast": {
+			"eyebrow": "Invite code copied",
+			"title": "Invite code copied",
+			"description": "Send this code to your friends to bring them in."
+		},
 		"memberListTitle": "Members"
 	},
 	"members": {

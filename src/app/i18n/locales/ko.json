@@ -43,6 +43,12 @@
 		},
 		"viewMembers": "멤버 보기",
 		"shareInvite": "초대 공유",
+		"copyInviteCode": "초대 코드 복사",
+		"copyToast": {
+			"eyebrow": "Invite code copied",
+			"title": "초대 코드가 복사됐어요",
+			"description": "이 코드를 친구에게 보내서 바로 초대해보세요."
+		},
 		"memberListTitle": "멤버 목록"
 	},
 	"members": {

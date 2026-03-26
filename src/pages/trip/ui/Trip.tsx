@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Loader, Modal, Stack, Text } from "@mantine/core";
 import { useClipboard, useDisclosure } from "@mantine/hooks";
@@ -13,6 +14,8 @@ export const TripPage = () => {
 	const navigate = useNavigate();
 	const { status, trip, member } = useTripAccess(id);
 	const clipboard = useClipboard({ timeout: 2000 });
+	const [copyToastVisible, setCopyToastVisible] = useState(false);
+	const copyToastTimerRef = useRef<number | null>(null);
 	const [
 		memberModalOpened,
 		{ open: openMemberModal, close: closeMemberModal },
@@ -23,6 +26,14 @@ export const TripPage = () => {
 		deleteModalOpened,
 		{ open: openDeleteModal, close: closeDeleteModal },
 	] = useDisclosure(false);
+
+	useEffect(() => {
+		return () => {
+			if (copyToastTimerRef.current) {
+				window.clearTimeout(copyToastTimerRef.current);
+			}
+		};
+	}, []);
 
 	if (status === "loading") {
 		return (
@@ -74,18 +85,43 @@ export const TripPage = () => {
 		);
 	}
 
-	// authorized
 	const handleShare = () => {
-		const text = `Trip·Thread 초대 코드: ${trip!.invite_code}`;
-		if (navigator.share) {
-			navigator.share({ title: trip!.name, text });
-		} else {
-			clipboard.copy(trip!.invite_code);
+		clipboard.copy(trip!.invite_code);
+		setCopyToastVisible(true);
+
+		if (copyToastTimerRef.current) {
+			window.clearTimeout(copyToastTimerRef.current);
 		}
+
+		copyToastTimerRef.current = window.setTimeout(() => {
+			setCopyToastVisible(false);
+		}, 2400);
 	};
 
 	return (
 		<>
+			<div
+				className="invite-copy-toast"
+				data-visible={copyToastVisible}
+				role="status"
+				aria-live="polite"
+				aria-hidden={!copyToastVisible}
+			>
+				<div className="invite-copy-toast__orb">✓</div>
+				<div className="invite-copy-toast__content">
+					<p className="invite-copy-toast__eyebrow">
+						{t("trip.copyToast.eyebrow")}
+					</p>
+					<p className="invite-copy-toast__title">
+						{t("trip.copyToast.title")}
+					</p>
+					<p className="invite-copy-toast__description">
+						{t("trip.copyToast.description")}
+					</p>
+				</div>
+				<div className="invite-copy-toast__code">{trip!.invite_code}</div>
+			</div>
+
 			<Stack gap="xl" pt="xl">
 				{/* 여행 헤더 */}
 				<div>
@@ -119,7 +155,9 @@ export const TripPage = () => {
 								color={clipboard.copied ? "teal" : "gray"}
 								onClick={handleShare}
 							>
-								{clipboard.copied ? t("common.copied") : t("trip.shareInvite")}
+								{clipboard.copied
+									? t("common.copied")
+									: t("trip.copyInviteCode")}
 							</Button>
 							{member!.role === "host" && (
 								<Button
