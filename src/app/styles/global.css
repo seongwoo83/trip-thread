@@ -80,3 +80,113 @@ html,
 body {
 	font-family: "Paperozi";
 }
+
+.invite-copy-toast {
+	position: fixed;
+	left: 50%;
+	bottom: 24px;
+	z-index: 1200;
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	width: min(calc(100vw - 32px), 420px);
+	padding: 14px 16px;
+	border: 1px solid rgba(255, 255, 255, 0.42);
+	border-radius: 22px;
+	background:
+		linear-gradient(135deg, rgba(12, 21, 36, 0.92), rgba(14, 124, 134, 0.9)),
+		radial-gradient(circle at top, rgba(255, 255, 255, 0.18), transparent 55%);
+	box-shadow:
+		0 24px 60px rgba(12, 21, 36, 0.28),
+		inset 0 1px 0 rgba(255, 255, 255, 0.18);
+	backdrop-filter: blur(18px);
+	transform: translateX(-50%) translateY(20px) scale(0.96);
+	opacity: 0;
+	pointer-events: none;
+	transition:
+		opacity 220ms ease,
+		transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.invite-copy-toast[data-visible="true"] {
+	opacity: 1;
+	transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.invite-copy-toast__orb {
+	display: grid;
+	place-items: center;
+	flex-shrink: 0;
+	width: 42px;
+	height: 42px;
+	border-radius: 999px;
+	background: linear-gradient(
+		135deg,
+		rgba(255, 255, 255, 0.3),
+		rgba(135, 234, 242, 0.22)
+	);
+	box-shadow:
+		inset 0 1px 0 rgba(255, 255, 255, 0.34),
+		0 10px 24px rgba(0, 0, 0, 0.18);
+	color: #f7fffe;
+	font-size: 1rem;
+	font-weight: 800;
+}
+
+.invite-copy-toast__content {
+	min-width: 0;
+	flex: 1;
+}
+
+.invite-copy-toast__eyebrow,
+.invite-copy-toast__title,
+.invite-copy-toast__description {
+	margin: 0;
+}
+
+.invite-copy-toast__eyebrow {
+	margin-bottom: 3px;
+	font-size: 0.64rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: rgba(224, 252, 255, 0.72);
+}
+
+.invite-copy-toast__title {
+	font-size: 0.95rem;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	color: #fffdfa;
+}
+
+.invite-copy-toast__description {
+	margin-top: 3px;
+	font-size: 0.76rem;
+	line-height: 1.45;
+	color: rgba(235, 248, 250, 0.82);
+}
+
+.invite-copy-toast__code {
+	flex-shrink: 0;
+	padding: 8px 11px;
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: 14px;
+	background: rgba(255, 255, 255, 0.12);
+	color: #f8fffe;
+	font-size: 0.78rem;
+	font-weight: 800;
+	letter-spacing: 0.08em;
+}
+
+@media (max-width: 640px) {
+	.invite-copy-toast {
+		bottom: 16px;
+		align-items: flex-start;
+		padding: 14px;
+	}
+
+	.invite-copy-toast__code {
+		margin-top: 2px;
+	}
+}
