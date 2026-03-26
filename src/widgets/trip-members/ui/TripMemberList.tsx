@@ -1,11 +1,24 @@
 import { Loader, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useTripMembers } from "@/entities/trip-member";
+import styles from "./TripMemberList.module.scss";
 
 type Props = {
 	tripId: string;
 	myMemberId: string;
 };
+
+function avatarGradient(nickname: string, isHost: boolean): string {
+	if (isHost) return "linear-gradient(135deg, #14919b, #0e7c86)";
+	const h = nickname.charCodeAt(0) % 4;
+	const gradients = [
+		"linear-gradient(135deg, #87eaf2, #54d1db)",
+		"linear-gradient(135deg, #54d1db, #38bec9)",
+		"linear-gradient(135deg, #38bec9, #2cb1bc)",
+		"linear-gradient(135deg, #bef8fd, #87eaf2)",
+	];
+	return gradients[h];
+}
 
 export const TripMemberList = ({ tripId, myMemberId }: Props) => {
 	const { data: members, isPending } = useTripMembers(tripId);
@@ -14,60 +27,35 @@ export const TripMemberList = ({ tripId, myMemberId }: Props) => {
 	if (isPending) {
 		return (
 			<div className="flex justify-center py-6">
-				<Loader size="xs" color="indigo" />
+				<Loader size="xs" color="cyan" />
 			</div>
 		);
 	}
 
 	return (
 		<div>
-			<Text
-				size="xs"
-				fw={600}
-				c="gray.5"
-				mb="sm"
-				style={{ letterSpacing: "0.05em" }}
-			>
+			<Text fw={700} className={styles.count}>
 				{t("members.count", { count: members?.length ?? 0 })}
 			</Text>
-			<div className="flex flex-col gap-2">
+			<div className={styles.list}>
 				{members?.map((m) => (
-					<div key={m.id} className="flex items-center gap-2.5">
-						{/* Avatar */}
+					<div key={m.id} className={styles.item}>
 						<div
-							className="flex items-center justify-center rounded-full text-white text-xs font-semibold shrink-0"
+							className={styles.avatar}
 							style={{
-								width: 32,
-								height: 32,
-								backgroundColor: m.role === "host" ? "#6366f1" : "#d1d5db",
-								color: m.role === "host" ? "white" : "#6b7280",
+								background: avatarGradient(m.nickname, m.role === "host"),
+								color: m.role === "host" ? "#fff" : "#0a6c74",
 							}}
 						>
 							{m.nickname.charAt(0).toUpperCase()}
 						</div>
-
-						{/* Name + role */}
-						<div className="flex items-center gap-1.5 min-w-0">
-							<span className="text-sm text-gray-800 font-medium truncate">
-								{m.nickname}
-							</span>
+						<div className={styles.meta}>
+							<span className={styles.name}>{m.nickname}</span>
 							{m.id === myMemberId && (
-								<span className="text-xs text-gray-400 shrink-0">
-									{t("members.me")}
-								</span>
+								<span className={styles.me}>{t("members.me")}</span>
 							)}
 							{m.role === "host" && (
-								<span
-									className="text-xs px-1.5 py-0.5 rounded-full shrink-0"
-									style={{
-										backgroundColor: "#eef2ff",
-										color: "#6366f1",
-										fontSize: "0.65rem",
-										fontWeight: 600,
-									}}
-								>
-									{t("members.host")}
-								</span>
+								<span className={styles.hostBadge}>{t("members.host")}</span>
 							)}
 						</div>
 					</div>

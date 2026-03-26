@@ -1,0 +1,53 @@
+@use "../../../app/styles/tokens" as *;
+@use "../../../app/styles/mixins" as *;
+
+.page {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+	padding-top: 1.5rem;
+}
+
+.stateTitle {
+	color: $text-secondary;
+
+	@include dark {
+		color: #d7e8eb;
+	}
+}
+
+.meta {
+	@include eyebrow;
+
+	margin-bottom: 0.375rem;
+}
+
+.title {
+	@include page-title;
+}
+
+.destinationBadge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	margin-top: 0.75rem;
+	padding: 5px 14px;
+	border: 1px solid $border-emphasis;
+	border-radius: $radius-pill;
+	background: $gradient-destination;
+
+	@include dark {
+		border-color: $border-dark-default;
+		background: $gradient-destination-dark;
+	}
+}
+
+.destinationText {
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: $ocean-700;
+
+	@include dark {
+		color: $ocean-200;
+	}
+}

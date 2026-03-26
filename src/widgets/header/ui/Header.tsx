@@ -2,13 +2,14 @@ import { NavLink as RNavLink, useLocation } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 import {
 	Burger,
-	Button,
 	Container,
 	Drawer,
 	Group,
+	UnstyledButton,
 	useMantineColorScheme,
 } from "@mantine/core";
 import { useTranslation } from "react-i18next";
+import styles from "./Header.module.scss";
 
 const NAV_LINKS = [{ labelKey: "Home", href: "/" }];
 
@@ -17,90 +18,73 @@ export const Header = () => {
 	const { pathname } = useLocation();
 	const { i18n } = useTranslation();
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+	const dark = colorScheme === "dark";
 
 	const toggleLanguage = () => {
 		i18n.changeLanguage(i18n.language === "ko" ? "en" : "ko");
 	};
 
 	return (
-		<div className="w-full h-full bg-white/70 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200/60 dark:border-gray-700/60">
-			<Container size="xl" h="100%">
-				<Group h="100%" justify="flex-start">
-					{/* Logo */}
-					<RNavLink to="/" className="no-underline">
-						<span
-							className="text-gray-900 dark:text-gray-100"
-							style={{
-								fontFamily: "Paperozi",
-								fontWeight: 700,
-								fontSize: "1.125rem",
-								letterSpacing: "-0.02em",
-							}}
-						>
-							Trip
-							<span style={{ color: "#6366f1" }}>·</span>
-							Thread
+		<div className={styles.shell}>
+			<Container size="md" h="100%">
+				<Group h="100%" justify="space-between">
+					<RNavLink to="/" className={styles.brand}>
+						<svg className={styles.brandIcon} viewBox="0 0 24 24" fill="none">
+							<circle
+								className={styles.brandCircle}
+								cx="12"
+								cy="12"
+								r="10"
+								strokeWidth="1.5"
+							/>
+							<path
+								className={styles.brandNeedle}
+								d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36z"
+							/>
+							<circle className={styles.brandCore} cx="12" cy="12" r="1.5" />
+						</svg>
+						<span className={styles.brandText}>
+							trip
+							<span className={styles.brandAccent}>thread</span>
 						</span>
 					</RNavLink>
 
-					{/* Desktop nav */}
-					<Group gap="xl" visibleFrom="sm" className="ml-6">
+					<Group gap="lg" visibleFrom="sm">
 						{NAV_LINKS.map(({ labelKey, href }) => {
 							const isActive = pathname === href;
 							return (
-								<div key={href} className="relative flex items-center pb-0.5">
-									<RNavLink
-										to={href}
-										className="no-underline"
-										style={{
-											fontSize: "0.875rem",
-											fontWeight: isActive ? 600 : 400,
-											color: isActive
-												? colorScheme === "dark"
-													? "#f3f4f6"
-													: "#111"
-												: "#6b7280",
-											transition: "color 0.15s",
-										}}
-									>
-										{labelKey}
-									</RNavLink>
-									{isActive && (
-										<span
-											className="absolute -bottom-0.5 left-0 right-0 h-0.5 rounded-full"
-											style={{ backgroundColor: "#6366f1" }}
-										/>
-									)}
-								</div>
+								<RNavLink
+									key={href}
+									to={href}
+									className={styles.navLink}
+									data-active={isActive}
+								>
+									{labelKey}
+									{isActive && <span className={styles.navIndicator} />}
+								</RNavLink>
 							);
 						})}
 					</Group>
 
-					{/* Right actions */}
-					<Group className="ml-auto">
-						<Button
-							variant="subtle"
-							size="xs"
-							color="gray"
+					<Group gap={4}>
+						<UnstyledButton
 							onClick={toggleColorScheme}
-							style={{ minWidth: 36 }}
+							className={styles.actionButton}
 						>
-							{colorScheme === "dark" ? "☀️" : "🌙"}
-						</Button>
-						<Button
-							variant="subtle"
-							size="xs"
-							color="gray"
+							<span>{dark ? "☀️" : "🌙"}</span>
+						</UnstyledButton>
+						<UnstyledButton
 							onClick={toggleLanguage}
-							style={{ fontFamily: "monospace", minWidth: 36 }}
+							className={`${styles.actionButton} ${styles.languageButton}`}
 						>
 							{i18n.language === "ko" ? "EN" : "한"}
-						</Button>
+						</UnstyledButton>
 						<Burger
 							opened={opened}
 							onClick={toggle}
 							hiddenFrom="sm"
 							size="sm"
+							color={dark ? "#87eaf2" : "#0e7c86"}
 							aria-label="Toggle navigation"
 						/>
 					</Group>
@@ -112,19 +96,13 @@ export const Header = () => {
 				opened={opened}
 				onClose={close}
 				title={
-					<span
-						style={{
-							fontFamily: "Paperozi",
-							fontWeight: 700,
-							fontSize: "1.125rem",
-							letterSpacing: "-0.02em",
-						}}
-					>
-						trip<span style={{ color: "#6366f1" }}>·</span>thread
+					<span className={styles.drawerTitle}>
+						trip
+						<span className={styles.drawerAccent}>thread</span>
 					</span>
 				}
 				size="xs"
-			></Drawer>
+			/>
 		</div>
 	);
 };

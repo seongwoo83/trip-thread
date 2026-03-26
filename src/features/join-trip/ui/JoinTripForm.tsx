@@ -47,7 +47,7 @@ export const JoinTripForm = () => {
 								<Button
 									size="xs"
 									variant="light"
-									color={copied ? "teal" : "yellow"}
+									color={copied ? "cyan" : "yellow"}
 									onClick={copy}
 								>
 									{copied ? t("common.copied") : t("common.copy")}
