@@ -1,0 +1,112 @@
+@use "../../../app/styles/tokens" as *;
+@use "../../../app/styles/mixins" as *;
+
+.card {
+	@include glass-card(
+		16px,
+		$radius-xl,
+		rgba(255, 255, 255, 0.55),
+		$border-subtle
+	);
+}
+
+.textareaInput {
+	padding: 0;
+	border: none;
+	background: transparent;
+	font-size: 0.88rem;
+	resize: none;
+	color: $text-body;
+
+	&::placeholder {
+		color: $text-placeholder;
+	}
+
+	@include dark {
+		color: #d2e4e8;
+
+		&::placeholder {
+			color: #8095a0;
+		}
+	}
+}
+
+.previewWrap {
+	position: relative;
+	margin-top: 0.75rem;
+}
+
+.previewImage {
+	width: 100%;
+	max-height: 240px;
+	border-radius: $radius-md;
+	object-fit: cover;
+}
+
+.removeImageButton {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border: none;
+	border-radius: $radius-full;
+	background: rgba(0, 0, 0, 0.5);
+	color: #fff;
+	font-size: 0.7rem;
+	cursor: pointer;
+}
+
+.footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 0.75rem;
+	padding-top: 0.75rem;
+	border-top: 1px solid $border-subtle;
+
+	@include dark {
+		border-top-color: $border-dark-default;
+	}
+}
+
+.uploadButton {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0;
+	border: none;
+	background: none;
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: $text-placeholder;
+	cursor: pointer;
+	transition: color $transition-fast;
+
+	&:hover {
+		color: $ocean-600;
+	}
+
+	@include dark {
+		color: #8499a3;
+
+		&:hover {
+			color: $ocean-300;
+		}
+	}
+}
+
+.submitButton {
+	border: none;
+	background: $gradient-ocean;
+	font-size: 0.78rem;
+	font-weight: 700;
+}
+
+.actions {
+	display: flex;
+	gap: 0.5rem;
+}

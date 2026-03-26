@@ -36,6 +36,18 @@ function avatarLetter(nickname: string) {
 	return nickname.charAt(0).toUpperCase();
 }
 
+function avatarGradient(nickname: string): string {
+	const h = nickname.charCodeAt(0) % 5;
+	const gradients = [
+		"linear-gradient(135deg, #14919b, #38bec9)",
+		"linear-gradient(135deg, #0e7c86, #54d1db)",
+		"linear-gradient(135deg, #38bec9, #87eaf2)",
+		"linear-gradient(135deg, #0a6c74, #2cb1bc)",
+		"linear-gradient(135deg, #07585f, #14919b)",
+	];
+	return gradients[h];
+}
+
 type CommentNodeProps = {
 	comment: CommentWithMeta;
 	postId: string;
@@ -43,6 +55,20 @@ type CommentNodeProps = {
 	memberId: string;
 	memberRole: "host" | "member" | null;
 };
+
+const DEPTH_STYLES = [
+	{ ml: 0, bg: "rgba(255,255,255,0.45)", borderLeft: "none" },
+	{
+		ml: 24,
+		bg: "rgba(14,124,134,0.03)",
+		borderLeft: "2px solid rgba(14,124,134,0.12)",
+	},
+	{
+		ml: 48,
+		bg: "rgba(251,146,60,0.03)",
+		borderLeft: "2px solid rgba(251,146,60,0.1)",
+	},
+];
 
 const CommentNode = ({
 	comment,
@@ -61,6 +87,8 @@ const CommentNode = ({
 	const editComment = useEditComment();
 	const { t } = useTranslation();
 
+	const depthStyle = DEPTH_STYLES[comment.depth] ?? DEPTH_STYLES[2];
+
 	const handleEditSubmit = async (e: { preventDefault(): void }) => {
 		e.preventDefault();
 		if (!editContent.trim()) return;
@@ -75,29 +103,52 @@ const CommentNode = ({
 	return (
 		<div>
 			<div
-				className={`rounded-xl p-3 ${
-					comment.depth === 0
-						? "bg-white dark:bg-gray-800"
-						: comment.depth === 1
-							? "ml-6 bg-gray-50 dark:bg-gray-700"
-							: "ml-12 bg-gray-100 dark:bg-gray-600"
-				}`}
+				style={{
+					marginLeft: depthStyle.ml,
+					background: depthStyle.bg,
+					borderLeft: depthStyle.borderLeft,
+					borderRadius: 12,
+					padding: "12px 14px",
+				}}
 			>
-				{/* 작성자 */}
+				{/* Author */}
 				<div className="mb-1.5 flex items-center gap-2">
-					<div className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">
+					<div
+						className="flex items-center justify-center rounded-full text-white shrink-0"
+						style={{
+							width: 22,
+							height: 22,
+							background: avatarGradient(comment.author.nickname),
+							fontSize: "0.6rem",
+							fontWeight: 800,
+						}}
+					>
 						{avatarLetter(comment.author.nickname)}
 					</div>
-					<span className="text-xs font-semibold text-gray-700 dark:text-gray-200">
+					<span
+						style={{ fontSize: "0.78rem", fontWeight: 700, color: "#1a3a4a" }}
+					>
 						{comment.author.nickname}
 					</span>
-					<span className="ml-auto text-xs text-gray-400">
+					<span
+						style={{
+							fontSize: "0.68rem",
+							color: "#a8b8c2",
+							marginLeft: "auto",
+						}}
+					>
 						{formatRelativeTime(comment.created_at)}
 					</span>
 					{canEdit && !editing && (
 						<button
 							type="button"
-							className="text-xs text-gray-400 hover:text-indigo-500"
+							style={{
+								fontSize: "0.68rem",
+								color: "#a8b8c2",
+								background: "none",
+								border: "none",
+								cursor: "pointer",
+							}}
 							onClick={() => {
 								setEditContent(comment.content);
 								setEditing(true);
@@ -109,18 +160,30 @@ const CommentNode = ({
 					{canDelete && (
 						<button
 							type="button"
-							className="text-xs text-gray-400 hover:text-red-500"
+							style={{
+								fontSize: "0.68rem",
+								color: "#a8b8c2",
+								background: "none",
+								border: "none",
+								cursor: "pointer",
+							}}
 							disabled={deleteComment.isPending}
 							onClick={() =>
 								deleteComment.mutate({ commentId: comment.id, postId, tripId })
 							}
+							onMouseEnter={(e) => {
+								e.currentTarget.style.color = "#ef4444";
+							}}
+							onMouseLeave={(e) => {
+								e.currentTarget.style.color = "#a8b8c2";
+							}}
 						>
 							{t("common.delete")}
 						</button>
 					)}
 				</div>
 
-				{/* 내용 or 수정 폼 */}
+				{/* Content or edit form */}
 				{editing ? (
 					<form onSubmit={handleEditSubmit} className="mt-1">
 						<Textarea
@@ -128,7 +191,7 @@ const CommentNode = ({
 							onChange={(e) => setEditContent(e.target.value)}
 							minRows={1}
 							autosize
-							styles={{ input: { fontSize: "0.875rem", resize: "none" } }}
+							styles={{ input: { fontSize: "0.85rem", resize: "none" } }}
 						/>
 						<div className="mt-2 flex gap-2">
 							<Button
@@ -153,23 +216,37 @@ const CommentNode = ({
 						</div>
 					</form>
 				) : (
-					<p className="text-sm leading-relaxed text-gray-700 dark:text-gray-200">
+					<p style={{ fontSize: "0.85rem", lineHeight: 1.6, color: "#3d5a66" }}>
 						{comment.content}
 					</p>
 				)}
 
-				{/* 답글 버튼 */}
+				{/* Reply button */}
 				{canReply && !editing && (
 					<button
 						type="button"
-						className="mt-1.5 text-xs text-gray-400 hover:text-indigo-500"
+						style={{
+							marginTop: 6,
+							fontSize: "0.7rem",
+							color: "#a8b8c2",
+							fontWeight: 600,
+							background: "none",
+							border: "none",
+							cursor: "pointer",
+							transition: "color 0.15s",
+						}}
 						onClick={() => setReplying((v) => !v)}
+						onMouseEnter={(e) => {
+							e.currentTarget.style.color = "#14919b";
+						}}
+						onMouseLeave={(e) => {
+							e.currentTarget.style.color = "#a8b8c2";
+						}}
 					>
 						{replying ? t("common.cancel") : t("postThread.reply")}
 					</button>
 				)}
 
-				{/* 답글 폼 */}
 				{replying && (
 					<div className="mt-2">
 						<CreateCommentForm
@@ -184,7 +261,6 @@ const CommentNode = ({
 				)}
 			</div>
 
-			{/* 대댓글 */}
 			{comment.replies.length > 0 && (
 				<Stack gap={4} mt={4}>
 					{comment.replies.map((reply) => (
@@ -219,7 +295,7 @@ export const PostThread = ({ postId, tripId }: Props) => {
 	if (postLoading) {
 		return (
 			<div className="flex justify-center py-12">
-				<Loader size="sm" color="indigo" />
+				<Loader size="sm" color="cyan" />
 			</div>
 		);
 	}
@@ -227,12 +303,18 @@ export const PostThread = ({ postId, tripId }: Props) => {
 	if (!post) {
 		return (
 			<Stack align="center" gap="sm" pt={60}>
-				<Text size="lg" fw={600} c="gray.7">
+				<Text size="lg" fw={700} style={{ color: "#3d5a66" }}>
 					{t("postThread.notFound")}
 				</Text>
 				<button
 					type="button"
-					className="text-sm text-indigo-500 hover:underline"
+					style={{
+						fontSize: "0.85rem",
+						color: "#14919b",
+						background: "none",
+						border: "none",
+						cursor: "pointer",
+					}}
 					onClick={() => navigate(`/trip/${tripId}`)}
 				>
 					{t("postThread.backToFeed")}
@@ -246,26 +328,69 @@ export const PostThread = ({ postId, tripId }: Props) => {
 
 	return (
 		<Stack gap="xl">
-			{/* 뒤로가기 */}
+			{/* Back */}
 			<button
 				type="button"
-				className="flex items-center gap-1 text-sm text-gray-500 hover:text-indigo-500"
+				className="flex items-center gap-1.5"
+				style={{
+					fontSize: "0.8rem",
+					color: "#8a9ba5",
+					fontWeight: 500,
+					background: "none",
+					border: "none",
+					cursor: "pointer",
+					transition: "color 0.15s",
+				}}
 				onClick={() => navigate(`/trip/${tripId}`)}
+				onMouseEnter={(e) => {
+					e.currentTarget.style.color = "#14919b";
+				}}
+				onMouseLeave={(e) => {
+					e.currentTarget.style.color = "#8a9ba5";
+				}}
 			>
+				<svg
+					width="14"
+					height="14"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="2.5"
+				>
+					<polyline points="15 18 9 12 15 6" />
+				</svg>
 				{t("postThread.backToFeed")}
 			</button>
 
-			{/* 원본 포스트 */}
-			<div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5">
-				<div className="mb-3 flex items-center gap-2">
-					<div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">
+			{/* Post */}
+			<div
+				style={{
+					background: "rgba(255,255,255,0.55)",
+					border: "1px solid rgba(14,124,134,0.06)",
+					borderRadius: 18,
+					padding: "22px 20px",
+				}}
+			>
+				<div className="mb-3.5 flex items-center gap-2.5">
+					<div
+						className="flex items-center justify-center rounded-full text-white shrink-0"
+						style={{
+							width: 36,
+							height: 36,
+							background: avatarGradient(post.author.nickname),
+							fontSize: "0.85rem",
+							fontWeight: 800,
+						}}
+					>
 						{avatarLetter(post.author.nickname)}
 					</div>
 					<div>
-						<p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+						<p
+							style={{ fontSize: "0.85rem", fontWeight: 700, color: "#1a3a4a" }}
+						>
 							{post.author.nickname}
 						</p>
-						<p className="text-xs text-gray-400">
+						<p style={{ fontSize: "0.7rem", color: "#a8b8c2" }}>
 							{formatRelativeTime(post.created_at)}
 						</p>
 					</div>
@@ -273,7 +398,13 @@ export const PostThread = ({ postId, tripId }: Props) => {
 						{canEditPost && !editingPost && (
 							<button
 								type="button"
-								className="text-xs text-gray-400 hover:text-indigo-500"
+								style={{
+									fontSize: "0.72rem",
+									color: "#a8b8c2",
+									background: "none",
+									border: "none",
+									cursor: "pointer",
+								}}
 								onClick={() => setEditingPost(true)}
 							>
 								{t("common.edit")}
@@ -282,7 +413,13 @@ export const PostThread = ({ postId, tripId }: Props) => {
 						{canDeletePost && (
 							<button
 								type="button"
-								className="text-xs text-gray-400 hover:text-red-500"
+								style={{
+									fontSize: "0.72rem",
+									color: "#a8b8c2",
+									background: "none",
+									border: "none",
+									cursor: "pointer",
+								}}
 								disabled={deletePost.isPending}
 								onClick={() =>
 									deletePost.mutate(
@@ -290,6 +427,12 @@ export const PostThread = ({ postId, tripId }: Props) => {
 										{ onSuccess: () => navigate(`/trip/${tripId}`) },
 									)
 								}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.color = "#ef4444";
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.color = "#a8b8c2";
+								}}
 							>
 								{t("common.delete")}
 							</button>
@@ -312,11 +455,19 @@ export const PostThread = ({ postId, tripId }: Props) => {
 							<img
 								src={post.image_url}
 								alt=""
-								className="mb-3 w-full rounded-xl object-cover"
+								className="w-full object-cover"
+								style={{ borderRadius: 14, marginBottom: 14 }}
 							/>
 						)}
 						{post.content && (
-							<p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800 dark:text-gray-100">
+							<p
+								className="whitespace-pre-wrap"
+								style={{
+									fontSize: "0.9rem",
+									lineHeight: 1.7,
+									color: "#2d4a56",
+								}}
+							>
 								{post.content}
 							</p>
 						)}
@@ -324,9 +475,17 @@ export const PostThread = ({ postId, tripId }: Props) => {
 				)}
 			</div>
 
-			{/* 댓글 섹션 */}
+			{/* Comments */}
 			<Stack gap="sm">
-				<Text size="sm" fw={600} c="gray.7">
+				<Text
+					fw={700}
+					style={{
+						fontSize: "0.78rem",
+						color: "#3d5a66",
+						letterSpacing: "0.03em",
+						textTransform: "uppercase",
+					}}
+				>
 					{t("postThread.commentsTitle")}
 				</Text>
 
@@ -338,7 +497,7 @@ export const PostThread = ({ postId, tripId }: Props) => {
 
 				{commentsLoading ? (
 					<div className="flex justify-center py-6">
-						<Loader size="xs" color="indigo" />
+						<Loader size="xs" color="cyan" />
 					</div>
 				) : comments && comments.length > 0 ? (
 					<Stack gap="xs">
@@ -354,7 +513,7 @@ export const PostThread = ({ postId, tripId }: Props) => {
 						))}
 					</Stack>
 				) : (
-					<Text size="sm" c="gray.4" ta="center" py="md">
+					<Text size="sm" ta="center" py="md" style={{ color: "#c4d0d6" }}>
 						{t("postThread.noComments")}
 					</Text>
 				)}

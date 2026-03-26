@@ -3,6 +3,7 @@ import { Button, Loader, Stack, Text } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useTripAccess } from "@/entities/trip";
 import { PostThread } from "@/widgets/post-thread";
+import styles from "./Post.module.scss";
 
 export const PostPage = () => {
 	const { id, postId } = useParams<{ id: string; postId: string }>();
@@ -13,7 +14,7 @@ export const PostPage = () => {
 	if (status === "loading") {
 		return (
 			<div className="flex items-center justify-center py-32">
-				<Loader size="sm" color="indigo" />
+				<Loader size="sm" color="cyan" />
 			</div>
 		);
 	}
@@ -21,13 +22,14 @@ export const PostPage = () => {
 	if (status === "not-found") {
 		return (
 			<Stack align="center" gap="sm" pt={60}>
-				<Text size="lg" fw={600} c="gray.7">
+				<Text size="lg" fw={700} className={styles.stateTitle}>
 					{t("trip.notFound.title")}
 				</Text>
 				<Button
 					variant="subtle"
 					size="sm"
 					mt="xs"
+					color="cyan"
 					onClick={() => navigate("/")}
 				>
 					{t("common.goHome")}
@@ -39,13 +41,14 @@ export const PostPage = () => {
 	if (status === "unauthorized") {
 		return (
 			<Stack align="center" gap="sm" pt={60}>
-				<Text size="lg" fw={600} c="gray.7">
+				<Text size="lg" fw={700} className={styles.stateTitle}>
 					{t("trip.unauthorized.title")}
 				</Text>
 				<Button
 					variant="subtle"
 					size="sm"
 					mt="xs"
+					color="cyan"
 					onClick={() => navigate("/")}
 				>
 					{t("common.goHome")}
@@ -55,21 +58,15 @@ export const PostPage = () => {
 	}
 
 	return (
-		<Stack gap="xl" pt="xl">
-			{/* 여행 헤더 */}
+		<div className={`animate-float-in ${styles.page}`}>
 			<div>
-				<Text size="xs" c="gray.4" mb={4}>
-					{trip!.start_date} ~ {trip!.end_date}
-				</Text>
-				<h1
-					className="text-2xl font-bold text-gray-900 tracking-tight"
-					style={{ fontFamily: "Paperozi" }}
-				>
-					{trip!.name}
-				</h1>
+				<p className={styles.meta}>
+					{trip!.start_date} — {trip!.end_date}
+				</p>
+				<h1 className={styles.title}>{trip!.name}</h1>
 				{trip!.destination && (
-					<div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1">
-						<span className="text-xs font-medium text-indigo-600">
+					<div className={styles.destinationBadge}>
+						<span className={styles.destinationText}>
 							📍 {trip!.destination}
 						</span>
 					</div>
@@ -77,6 +74,6 @@ export const PostPage = () => {
 			</div>
 
 			<PostThread postId={postId!} tripId={trip!.id} />
-		</Stack>
+		</div>
 	);
 };

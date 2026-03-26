@@ -7,7 +7,7 @@ import { PostPage } from "@/pages/post";
 import { Header } from "@/widgets/header";
 
 const Layout = () => (
-	<AppShell header={{ height: 56 }}>
+	<AppShell header={{ height: 60 }}>
 		<AppShell.Header
 			style={{
 				background: "transparent",
@@ -18,7 +18,7 @@ const Layout = () => (
 			<Header />
 		</AppShell.Header>
 		<AppShell.Main>
-			<Container size="xl">
+			<Container size="md" pb={60}>
 				<Outlet />
 			</Container>
 		</AppShell.Main>

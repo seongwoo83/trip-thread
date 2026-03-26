@@ -3,6 +3,7 @@ import { Button, Textarea } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import { useCreatePost } from "../model/useCreatePost";
 import { uploadTripPhoto } from "@/shared/lib";
+import styles from "@/features/post-editor/ui/PostEditor.module.scss";
 
 type Props = {
 	tripId: string;
@@ -50,47 +51,34 @@ export const CreatePostForm = ({ tripId, authorId }: Props) => {
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<div className="rounded-2xl border border-gray-200 bg-white p-4">
+			<div className={styles.card}>
 				<Textarea
 					placeholder={t("createPost.placeholder")}
 					value={content}
 					onChange={(e) => setContent(e.target.value)}
 					minRows={3}
 					autosize
-					styles={{
-						input: {
-							border: "none",
-							padding: 0,
-							fontSize: "0.9rem",
-							resize: "none",
-						},
-					}}
+					classNames={{ input: styles.textareaInput }}
 				/>
 
-				{/* 이미지 미리보기 */}
 				{imagePreview && (
-					<div className="relative mt-3">
-						<img
-							src={imagePreview}
-							alt=""
-							className="max-h-60 w-full rounded-xl object-cover"
-						/>
+					<div className={styles.previewWrap}>
+						<img src={imagePreview} alt="" className={styles.previewImage} />
 						<button
 							type="button"
 							onClick={removeImage}
-							className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-xs text-white hover:bg-black/70"
+							className={styles.removeImageButton}
 						>
 							✕
 						</button>
 					</div>
 				)}
 
-				<div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3">
-					{/* 사진 첨부 버튼 */}
+				<div className={styles.footer}>
 					<button
 						type="button"
 						onClick={() => fileInputRef.current?.click()}
-						className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-indigo-500 transition-colors"
+						className={styles.uploadButton}
 					>
 						<svg
 							width="18"
@@ -121,6 +109,7 @@ export const CreatePostForm = ({ tripId, authorId }: Props) => {
 						radius="xl"
 						loading={createPost.isPending}
 						disabled={!canSubmit}
+						className={canSubmit ? styles.submitButton : undefined}
 					>
 						{t("createPost.submit")}
 					</Button>

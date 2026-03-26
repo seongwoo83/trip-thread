@@ -1,0 +1,224 @@
+@use "../../../app/styles/tokens" as *;
+@use "../../../app/styles/mixins" as *;
+
+.page {
+	display: flex;
+	flex-direction: column;
+	gap: 2.5rem;
+	padding: 2rem 0;
+}
+
+.hero {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.heroCopy {
+	max-width: 36rem;
+}
+
+.heroTitle {
+	@include page-title;
+}
+
+.heroSubtitle {
+	margin-top: 0.5rem;
+	font-size: 0.88rem;
+	line-height: 1.6;
+	color: $text-label;
+
+	@include dark {
+		color: #9db4bc;
+	}
+}
+
+.heroAction {
+	flex-shrink: 0;
+	border: none;
+	background: $gradient-ocean;
+	box-shadow: 0 4px 14px rgba(14, 124, 134, 0.2);
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+}
+
+.joinCard {
+	@include glass-card(20px 22px);
+
+	background: linear-gradient(
+		135deg,
+		rgba(14, 124, 134, 0.04) 0%,
+		rgba(56, 190, 201, 0.03) 100%
+	);
+
+	@include dark {
+		background: linear-gradient(
+			135deg,
+			rgba(14, 124, 134, 0.22) 0%,
+			rgba(12, 21, 36, 0.56) 100%
+		);
+	}
+}
+
+.sectionLabel {
+	font-size: 0.82rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: $text-secondary;
+
+	@include dark {
+		color: #aac3cb;
+	}
+}
+
+.helperText {
+	color: $text-placeholder;
+
+	@include dark {
+		color: #829aa5;
+	}
+}
+
+.linkButton {
+	padding: 0;
+	border: none;
+	background: none;
+	color: $ocean-600;
+	font-weight: 600;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+
+	@include dark {
+		color: $ocean-300;
+	}
+}
+
+.tripHeader {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-bottom: 1rem;
+}
+
+.tripCount {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	border-radius: $radius-full;
+	background: linear-gradient(135deg, $ocean-600, $ocean-400);
+	color: #fff;
+	font-size: 0.65rem;
+	font-weight: 800;
+}
+
+.tripGrid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.75rem;
+}
+
+.tripCard {
+	@include glass-card(18px 20px);
+	@include glass-hover;
+
+	width: 100%;
+	cursor: pointer;
+	text-align: left;
+}
+
+.tripName {
+	margin-bottom: 0.375rem;
+	overflow: hidden;
+	font-size: 0.95rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: $text-heading;
+
+	@include dark {
+		color: #edf7f8;
+	}
+}
+
+.tripDestination {
+	margin-bottom: 0.625rem;
+	font-size: 0.78rem;
+	font-weight: 600;
+	color: $ocean-600;
+
+	&[data-empty="true"] {
+		font-weight: 400;
+		color: $text-subtle;
+	}
+
+	@include dark {
+		color: $ocean-300;
+
+		&[data-empty="true"] {
+			color: #7f99a2;
+		}
+	}
+}
+
+.tripDate {
+	font-size: 0.72rem;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	color: $text-placeholder;
+
+	@include dark {
+		color: #7c919b;
+	}
+}
+
+.emptyState {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 3.5rem 1rem;
+	border: 1.5px dashed $border-active;
+	border-radius: $radius-xl;
+	background: rgba(255, 255, 255, 0.35);
+	text-align: center;
+
+	@include dark {
+		background: rgba(12, 21, 36, 0.35);
+		border-color: $border-dark-default;
+	}
+}
+
+.emptyText {
+	font-size: 0.85rem;
+	color: $text-placeholder;
+
+	@include dark {
+		color: #7f96a0;
+	}
+}
+
+@media (max-width: 40rem) {
+	.hero {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.heroAction {
+		width: 100%;
+	}
+}
+
+@media (min-width: 40rem) {
+	.tripGrid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
