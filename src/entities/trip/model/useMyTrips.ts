@@ -29,7 +29,11 @@ export function useMyTrips() {
 
 			const trips = (data ?? [])
 				.map((row) => (row as unknown as { trips: Trip }).trips)
-				.filter(Boolean);
+				.filter(Boolean)
+				.filter(
+					(trip) =>
+						localStorage.getItem(`trip-thread:token:${trip.id}`) !== null,
+				);
 
 			// localStorage를 서버 기준으로 동기화 (추가·삭제 모두 반영)
 			syncLocalTripIds(trips.map((t) => t.id));
