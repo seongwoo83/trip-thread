@@ -8,6 +8,7 @@ import { DestinationVoteWidget } from "@/widgets/destination-vote";
 import { TripBoard } from "@/widgets/trip-board";
 import { TripMemberList } from "@/widgets/trip-members";
 import { useDeleteTrip } from "@/features/delete-trip";
+import { useLeaveTrip } from "@/features/leave-trip";
 import styles from "./Trip.module.scss";
 
 export const TripPage = () => {
@@ -23,10 +24,13 @@ export const TripPage = () => {
 	] = useDisclosure(false);
 	const { t } = useTranslation();
 	const deleteTrip = useDeleteTrip();
+	const leaveTrip = useLeaveTrip();
 	const [
 		deleteModalOpened,
 		{ open: openDeleteModal, close: closeDeleteModal },
 	] = useDisclosure(false);
+	const [leaveModalOpened, { open: openLeaveModal, close: closeLeaveModal }] =
+		useDisclosure(false);
 
 	useEffect(() => {
 		return () => {
@@ -154,7 +158,7 @@ export const TripPage = () => {
 									? t("common.copied")
 									: t("trip.copyInviteCode")}
 							</Button>
-							{member!.role === "host" && (
+							{member!.role === "host" ? (
 								<Button
 									variant="subtle"
 									size="xs"
@@ -162,7 +166,17 @@ export const TripPage = () => {
 									onClick={openDeleteModal}
 									className={styles.actionButton}
 								>
-									여행 삭제
+									{t("trip.deleteTrip")}
+								</Button>
+							) : (
+								<Button
+									variant="subtle"
+									size="xs"
+									color="red"
+									onClick={openLeaveModal}
+									className={styles.actionButton}
+								>
+									{t("trip.leaveTrip")}
 								</Button>
 							)}
 						</div>
@@ -215,15 +229,14 @@ export const TripPage = () => {
 				onClose={closeDeleteModal}
 				title={
 					<Text fw={700} size="sm" className={styles.deleteTitle}>
-						여행 삭제
+						{t("trip.deleteTrip")}
 					</Text>
 				}
 				size="xs"
 			>
 				<Stack gap="md">
 					<Text size="sm" className={styles.deleteText}>
-						<strong>{trip!.name}</strong> 여행을 삭제하면 모든 게시글, 댓글,
-						투표 기록이 영구적으로 사라집니다. 이 작업은 되돌릴 수 없습니다.
+						{t("trip.deleteConfirm", { name: trip!.name })}
 					</Text>
 					<div className={styles.modalActions}>
 						<Button
@@ -232,7 +245,7 @@ export const TripPage = () => {
 							size="sm"
 							onClick={closeDeleteModal}
 						>
-							취소
+							{t("common.cancel")}
 						</Button>
 						<Button
 							color="red"
@@ -240,7 +253,44 @@ export const TripPage = () => {
 							loading={deleteTrip.isPending}
 							onClick={() => deleteTrip.mutate(trip!.id)}
 						>
-							삭제
+							{t("common.delete")}
+						</Button>
+					</div>
+				</Stack>
+			</Modal>
+
+			<Modal
+				opened={leaveModalOpened}
+				onClose={closeLeaveModal}
+				title={
+					<Text fw={700} size="sm" className={styles.deleteTitle}>
+						{t("trip.leaveTrip")}
+					</Text>
+				}
+				size="xs"
+			>
+				<Stack gap="md">
+					<Text size="sm" className={styles.deleteText}>
+						{t("trip.leaveConfirm", { name: trip!.name })}
+					</Text>
+					<div className={styles.modalActions}>
+						<Button
+							variant="subtle"
+							color="gray"
+							size="sm"
+							onClick={closeLeaveModal}
+						>
+							{t("common.cancel")}
+						</Button>
+						<Button
+							color="red"
+							size="sm"
+							loading={leaveTrip.isPending}
+							onClick={() =>
+								leaveTrip.mutate({ tripId: trip!.id, memberId: member!.id })
+							}
+						>
+							{t("trip.leaveConfirmButton")}
 						</Button>
 					</div>
 				</Stack>

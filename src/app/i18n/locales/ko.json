@@ -49,7 +49,12 @@
 			"title": "초대 코드가 복사됐어요",
 			"description": "이 코드를 친구에게 보내서 바로 초대해보세요."
 		},
-		"memberListTitle": "멤버 목록"
+		"memberListTitle": "멤버 목록",
+		"deleteTrip": "여행 삭제",
+		"deleteConfirm": "<strong>{{name}}</strong> 여행을 삭제하면 모든 게시글, 댓글, 투표 기록이 영구적으로 사라집니다. 이 작업은 되돌릴 수 없습니다.",
+		"leaveTrip": "여행 나가기",
+		"leaveConfirm": "<strong>{{name}}</strong> 여행에서 나가면 다시 참여하려면 초대 코드가 필요해요.",
+		"leaveConfirmButton": "나가기"
 	},
 	"members": {
 		"count": "멤버 {{count}}명",

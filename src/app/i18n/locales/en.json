@@ -49,7 +49,12 @@
 			"title": "Invite code copied",
 			"description": "Send this code to your friends to bring them in."
 		},
-		"memberListTitle": "Members"
+		"memberListTitle": "Members",
+		"deleteTrip": "Delete Trip",
+		"deleteConfirm": "Deleting <strong>{{name}}</strong> will permanently remove all posts, comments, and votes. This cannot be undone.",
+		"leaveTrip": "Leave Trip",
+		"leaveConfirm": "If you leave <strong>{{name}}</strong>, you'll need an invite code to rejoin.",
+		"leaveConfirmButton": "Leave"
 	},
 	"members": {
 		"count": "{{count}} members",
